@@ -65,7 +65,7 @@ Sobre as arestas:
   - número de transições (arestas)
 - eventDescription: string
   - etiqueta da transição
-- srcID
+- srcID: int
   - ID do vértice de origem
-- destID
+- destID: int
   - ID do vértice de destino
