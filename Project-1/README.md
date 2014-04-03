@@ -34,21 +34,23 @@ Tema 2: Suporte para geração de testes a partir de máquinas de estados
 ###Sintaxe dos ficheiros de texto:
 
 nVertexes  
-stateDescription init final  
-stateDescription init final  
-stateDescription init final  
+ID stateDescription init final  
+ID stateDescription init final  
+ID stateDescription init final  
 ...  
 nEdges  
-eventDescription src dest  
-eventDescription src dest  
-eventDescription src dest  
+eventDescription srcID destID  
+eventDescription srcID destID  
+eventDescription srcID destID  
 ...
 
-######Legend:
+######Legenda:
 
 Sobre os vértices:
 - nVertexes: int
   - número de estados (vértices)
+- ID: int
+  - ID do estado
 - stateDescription: string
   - etiqueta do estado
 - init: bool
@@ -63,7 +65,7 @@ Sobre as arestas:
   - número de transições (arestas)
 - eventDescription: string
   - etiqueta da transição
-- src
-  - vértice de origem
-- dest
-  - vértice de destino
+- srcID
+  - ID do vértice de origem
+- destID
+  - ID do vértice de destino
