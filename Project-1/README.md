@@ -8,12 +8,12 @@ Tema 2: Suporte para geração de testes a partir de máquinas de estados
 
 **P**: Quais vão ser os elementos dos grafos?  
 **R**: Os grafos vão ter:
-- vértices (vertexes) que representam estados;
-- arestas (edges) que representam transições entre estados, causadas por eventos;
-- um único estado inicial;
-- pelo menos um estado final;
-- todos os vértices devem ser atingíveis;
-- não pode haver mais que uma transição com o mesmo evento, mesmo estado de origem e diferentes estados de destino.
+* vértices (vertexes) que representam estados;
+* arestas (edges) que representam transições entre estados, causadas por eventos;
+* um único estado inicial;
+* pelo menos um estado final;
+* todos os vértices devem ser atingíveis;
+* não pode haver mais que uma transição com o mesmo evento, mesmo estado de origem e diferentes estados de destino.
 
 **P**: O que é um caminho ponta-a-ponta e o que é que representa?  
 **R**: É um caminho que começa no estado inicial e termina num estado final. Representa uma execução possível da máquina de estados.
@@ -33,3 +33,37 @@ Tema 2: Suporte para geração de testes a partir de máquinas de estados
 
 ###Sintaxe dos ficheiros de texto:
 
+nVertexes  
+stateDescription init final  
+stateDescription init final  
+stateDescription init final  
+...  
+nEdges  
+eventDescription src dest  
+eventDescription src dest  
+eventDescription src dest  
+...
+
+######Legend:
+
+Sobre os vértices:
+- nVertexes: int
+  - número de estados (vértices)
+- stateDescription: string
+  - etiqueta do estado
+- init: bool
+  - true se o estado for o inicial
+  - false caso contrário
+- dest: bool
+  - true se o estado for final/ de aceitação
+  - false caso contrário
+
+Sobre as arestas:
+- nEdges: string
+  - número de transições (arestas)
+- eventDescription: string
+  - etiqueta da transição
+- src
+  - vértice de origem
+- dest
+  - vértice de destino
