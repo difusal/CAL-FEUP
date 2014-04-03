@@ -1,7 +1,7 @@
 Tema 2: Suporte para geração de testes a partir de máquinas de estados
 ======================================================================
 
-###FAQs:
+###Perguntas:
 
 **P**: Como vão representar as máquinas de estados?  
 **R**: Recorrendo a grafos dirigidos.
@@ -44,7 +44,7 @@ eventDescription srcID destID
 eventDescription srcID destID  
 ...
 
-######Legenda:
+#####Legenda:
 
 Sobre os vértices:
 - nVertexes: int
