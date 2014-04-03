@@ -22,4 +22,14 @@ Tema 2: Suporte para geração de testes a partir de máquinas de estados
 **R**: Vão ser representados por uma sequência alternada de nomes de vértices (estados) e arestas (eventos).
 
 **P**: Como é dado o comprimento de um caminho?  
-**R**: Pelo número de arestas.
+**R**: É igual ao número de arestas.
+
+###Problemas a resolver:
+
+1. Dada uma máquina de estados, verificar se a mesma é válida (verificar se cumpre as regras acima);
+2. Determinar o caminho mais curto para chegar a um determinado estado;
+3. Encontrar um conjunto de caminhos ponta-a-ponta de comprimento total mínimo, cobrindo todas as transições;
+4. [Opcional] Determinar equivalência entre máquinas de estados.
+
+###Sintaxe dos ficheiros de texto:
+
