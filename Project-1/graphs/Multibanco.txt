@@ -1,0 +1,29 @@
+11
+0 1 1 Livre
+1 0 0 Espera Pin
+2 0 0 Verifica Pin
+3 0 0 Mostra operações
+4 0 0 Devolve cartão
+5 0 0 Espera montante
+6 0 0 Verifica saldo
+7 0 0 Entrega dinheiro
+8 0 0 Quer talão?
+9 0 0 Entrega talão
+10 0 0 Nova operação?
+16
+0 1 Cartão inserido
+1 2 Pin inserido
+2 1 Pin inválido
+2 3 Pin válido
+3 4 Cancelar
+4 0 Cartão recolhido
+3 5 Levantar dinheiro
+5 6 Montante inserido
+6 4 Saldo insuficiente
+6 7 Saldo Ok
+7 8 Dinheiro recolhido
+8 9 Sim
+9 10 Talão recolhido
+8 10 Não
+10 4 Não
+10 1 Sim
