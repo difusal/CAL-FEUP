@@ -1,70 +1,45 @@
 #include <iostream>
+#include <cstdlib>
+#include <string>
 #include <fstream>
-#include "graphviewer.h"
+#include <vector>
 
-#define GRAPH "graphs/Multibanco.txt"
-#define FOR(i, a, b) for(int i = a; i < b; i++)
+#include "MenusInterface.h"
 
-int main() {
-	GraphViewer *gv = new GraphViewer(600, 600, true);
-	gv->createWindow(600, 600);
+using namespace std;
 
-	gv->defineVertexColor("white");
-	gv->defineEdgeColor("black");
+vector<string> graphsList;
+
+void loadGraphs() {
+	string graphsListPath = "graphsList.txt";
+	graphsList.clear();
 
 	ifstream fin;
-	fin.open(GRAPH);
+	fin.open(graphsListPath.c_str());
 	if (!fin) {
-		cerr << "Unable to open file datafile.txt";
+		cerr << "Unable to open file " << graphsListPath;
 		exit(1);
 	}
 
-	int nVertexes;
-	int id, init, final;
-	string label;
-
-	fin >> nVertexes;
-	FOR (i, 0, nVertexes)
-	{
-		fin >> id >> init >> final;
-		getline(fin, label);
-
-		/*
-		 // Uncomment for console output
-		 cout << "id: " << id << "\tinit: " << init << "\tfinal: " << final << "\tlabel: " << label << endl;
-		 */
-
-		gv->addNode(id);
-		gv->setVertexLabel(id, label);
-
-		if (init && final)
-			gv->setVertexColor(id, "yellow");
-		else if (init)
-			gv->setVertexColor(id, "green");
-		else if (final)
-			gv->setVertexColor(id, "red");
+	int nGraphs;
+	string path;
+	fin >> nGraphs;
+	for (int i = 0; i < nGraphs; i++) {
+		fin >> path;
+		graphsList.push_back(path);
 	}
+}
 
-	int nEdges;
-	int srcID, destID;
+int main() {
+	loadGraphs();
 
-	fin >> nEdges;
-	FOR (i, 0, nEdges)
-	{
-		fin >> id >> srcID >> destID;
-		getline(fin, label);
+	bool done;
+	do {
+		done = showMainMenu();
+	} while (!done);
 
-		/*
-		 // Uncomment for console output
-		 cout << "id: " << id << "\tsrcID: " << srcID << "\tdestID: " << destID << "\tlabel: " << label << endl;
-		 */
+	cout << endl;
+	cout << "Programa terminado." << endl;
 
-		gv->addEdge(id, srcID, destID, EdgeType::DIRECTED);
-		gv->setEdgeLabel(id, label);
-	}
-
-	gv->rearrange();
-
-	cin.get();
 	return 0;
 }
