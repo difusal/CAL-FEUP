@@ -17,7 +17,7 @@ void loadGraphs() {
 	ifstream fin;
 	fin.open(graphsListPath.c_str());
 	if (!fin) {
-		cerr << "Unable to open file " << graphsListPath;
+		cerr << "Unable to open file " << graphsListPath << endl;
 		exit(1);
 	}
 

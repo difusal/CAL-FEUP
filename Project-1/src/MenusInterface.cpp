@@ -16,7 +16,7 @@ void displayGraph(string pathToGraphData) {
 	ifstream fin;
 	fin.open(pathToGraphData.c_str());
 	if (!fin) {
-		cerr << "Unable to open file " << pathToGraphData;
+		cerr << "Unable to open file " << pathToGraphData << endl;
 		exit(1);
 	}
 
@@ -116,7 +116,7 @@ int showMainMenu() {
 }
 
 void showAddGraphMenu() {
-
+	// TODO this
 }
 
 void showViewGraphMenu() {
