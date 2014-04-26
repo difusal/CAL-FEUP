@@ -18,6 +18,7 @@ public:
 	State(int id, int init, int final, std::string label);
 	virtual ~State();
 
+	int getID();
 	std::string getLabel();
 
 	bool operator ==(const State &s2) const;

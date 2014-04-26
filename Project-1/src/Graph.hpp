@@ -114,7 +114,13 @@ class Graph {
 	void dfsVisit();
 	void getPathTo(Vertex<T> *origin, std::list<T> &res);
 
+	int numInitStates;
+	int numFinalStates;
+
 public:
+	Graph();
+	~Graph();
+
 	/**
 	 * Returns the number of vertexes on the graph.
 	 */
@@ -126,6 +132,7 @@ public:
 	bool removeVertex(const T &in);
 
 	bool addEdge(const T &sourc, const T &dest, double w);
+	bool addEdge(const int sourcID, const int destID, double w);
 	bool removeEdge(const T &sourc, const T &dest);
 
 	std::vector<T> dfs() const;
@@ -169,7 +176,26 @@ public:
 	 * os outros vértices do grafo, no caso de grafos não pesados.
 	 */
 	void unweightedShortestPath(const T &v);
+
+	int getNumInitStates();
+	int getNumFinalStates();
+
+	void incNumInitStates();
+	void incNumFinalStates();
 };
+
+template<class T>
+Graph<T>::Graph() {
+	numCycles = 0;
+
+	numInitStates = 0;
+	numFinalStates = 0;
+}
+
+template<class T>
+Graph<T>::~Graph() {
+	// TODO this
+}
 
 template<class T>
 int Graph<T>::getNumVertex() const {
@@ -254,6 +280,36 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 		}
 
 		if ((*it)->info == dest) {
+			vD = *it;
+			found++;
+		}
+
+		it++;
+	}
+
+	if (found != 2)
+		return false;
+
+	vD->indegree++;
+	vS->addEdge(vD, w);
+
+	return true;
+}
+
+template<class T>
+bool Graph<T>::addEdge(const int sourc, const int dest, double w) {
+	typename std::vector<Vertex<T>*>::iterator it = vertexSet.begin();
+	typename std::vector<Vertex<T>*>::iterator ite = vertexSet.end();
+
+	int found = 0;
+	Vertex<T> *vS, *vD;
+	while (found != 2 && it != ite) {
+		if ((*it)->info.getID() == sourc) {
+			vS = *it;
+			found++;
+		}
+
+		if ((*it)->info.getID() == dest) {
 			vD = *it;
 			found++;
 		}
@@ -581,4 +637,24 @@ void Graph<T>::getPathTo(Vertex<T> *dest, std::list<T> &res) {
 
 	if (dest->path != NULL)
 		getPathTo(dest->path, res);
+}
+
+template<class T>
+int Graph<T>::getNumInitStates() {
+	return numInitStates;
+}
+
+template<class T>
+int Graph<T>::getNumFinalStates() {
+	return numFinalStates;
+}
+
+template<class T>
+void Graph<T>::incNumInitStates() {
+	numInitStates++;
+}
+
+template<class T>
+void Graph<T>::incNumFinalStates() {
+	numFinalStates++;
 }

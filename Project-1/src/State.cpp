@@ -11,6 +11,10 @@ State::~State() {
 	// TODO Auto-generated destructor stub
 }
 
+int State::getID() {
+	return id;
+}
+
 string State::getLabel() {
 	return label;
 }

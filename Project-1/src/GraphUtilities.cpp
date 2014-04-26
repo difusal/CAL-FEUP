@@ -6,6 +6,7 @@
 
 #include "graphviewer.h"
 #include "State.h"
+#include "Transition.h"
 
 using namespace std;
 
@@ -60,7 +61,7 @@ string chooseGraphAndGetItsPath() {
 		}
 	} while (!done);
 
-	return graphsList[input];
+	return graphsList[input-1];
 }
 
 Graph<State> loadGraph(string pathToGraphData) {
@@ -70,7 +71,6 @@ Graph<State> loadGraph(string pathToGraphData) {
 	fin.open(pathToGraphData.c_str());
 	if (!fin) {
 		cerr << "Unable to open file " << pathToGraphData << endl;
-		cin.get();
 		exit(1);
 	}
 
@@ -89,6 +89,11 @@ Graph<State> loadGraph(string pathToGraphData) {
 
 		State state(id, init, final, label);
 		graph.addVertex(state);
+
+		if (init)
+			graph.incNumInitStates();
+		if (final)
+			graph.incNumFinalStates();
 	}
 
 	int nEdges;
@@ -102,24 +107,26 @@ Graph<State> loadGraph(string pathToGraphData) {
 		 // Uncomment for console output
 		 cout << "id: " << id << "\tsrcID: " << srcID << "\tdestID: " << destID << "\tlabel: " << label << endl;
 		 */
+
+		Transition transition(id, srcID, destID, label);
+		graph.addEdge(srcID, destID, 1);
 	}
 
 	return graph;
 }
 
 void displayGraph(string pathToGraphData) {
-	GraphViewer *gv = new GraphViewer(600, 600, true);
-	gv->createWindow(600, 600);
-	gv->defineVertexColor("white");
-	gv->defineEdgeColor("black");
-
 	ifstream fin;
 	fin.open(pathToGraphData.c_str());
 	if (!fin) {
 		cerr << "Unable to open file " << pathToGraphData << endl;
-		cin.get();
 		exit(1);
 	}
+
+	GraphViewer *gv = new GraphViewer(600, 600, true);
+	gv->createWindow(600, 600);
+	gv->defineVertexColor("white");
+	gv->defineEdgeColor("black");
 
 	int nVertexes;
 	int id, init, final;

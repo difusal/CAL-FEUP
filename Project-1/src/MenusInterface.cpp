@@ -1,6 +1,7 @@
 #include "MenusInterface.h"
 
 #include <iostream>
+#include <vector>
 
 #include "GraphUtilities.h"
 #include "Graph.hpp"
@@ -32,8 +33,10 @@ int showMainMenu() {
 	case 1:
 		showViewGraphMenu();
 		break;
-	case 3:
+	case 2:
 		showValidateGraphMenu();
+		break;
+	case 3:
 		break;
 	case 4:
 		break;
@@ -63,4 +66,18 @@ void showValidateGraphMenu() {
 	string pathToGraphData = chooseGraphAndGetItsPath();
 
 	Graph<State> graph = loadGraph(pathToGraphData);
+
+	cout << endl;
+	if (graph.getNumInitStates() != 1 || graph.getNumFinalStates() < 1) {
+		cout << "A maquina de estados e invalida." << endl;
+		cout << "Detalhes:" << endl;
+
+		if (graph.getNumInitStates() != 1)
+			cout << "\tNao tem um e um so estado inicial (tem "
+					<< graph.getNumInitStates() << ")." << endl;
+
+		if (graph.getNumFinalStates() < 1)
+			cout << "\tNao tem pelo menos um estado final." << endl;
+	} else
+		cout << "A maquina de estados e valida." << endl;
 }
