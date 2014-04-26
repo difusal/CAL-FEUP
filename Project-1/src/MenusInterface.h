@@ -1,10 +1,10 @@
 #pragma once
 
-#include <iostream>
 #include <string>
+#include <vector>
 
-void displayGraph(std::string pathToGraphData);
+extern std::vector<std::string> graphsList;
 
 int showMainMenu();
-void showAddGraphMenu();
 void showViewGraphMenu();
+void showValidateGraphMenu();
