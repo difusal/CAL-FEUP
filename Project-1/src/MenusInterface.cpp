@@ -9,6 +9,13 @@
 
 using namespace std;
 
+void clearStdInAndPressEnterToContinue() {
+	cin.clear();
+	cin.ignore(10000, '\n');
+	cout << "Pressione <Enter> para continuar...";
+	cin.get();
+}
+
 int showMainMenu() {
 	cout << endl;
 	cout << "-------------------------------" << endl;
@@ -20,8 +27,7 @@ int showMainMenu() {
 	cout << "2. Validar grafo" << endl;
 	cout << "3. Determinar caminho mais curto" << endl;
 	cout << "4. Encontrar caminhos totais minimos" << endl;
-	cout << "5. Determinar equivalencia de maquinas de estados" << endl;
-	cout << "6. Sair" << endl;
+	cout << "5. Sair" << endl;
 	cout << endl;
 
 	int input;
@@ -37,21 +43,16 @@ int showMainMenu() {
 		showValidateGraphMenu();
 		break;
 	case 3:
+		showShortestPathToStateMenu();
 		break;
 	case 4:
 		break;
 	case 5:
-		break;
-	case 6:
 		return true;
 	default:
-		cin.clear();
-		cin.ignore(10000, '\n');
-
 		cout << endl;
 		cout << "Input invalido." << endl;
-		cout << "Pressione <Enter> para continuar...";
-		cin.get();
+		clearStdInAndPressEnterToContinue();
 		break;
 	}
 
@@ -98,4 +99,60 @@ void showValidateGraphMenu() {
 			cout << "\tA maquina de estados e nao determinista." << endl;
 	} else
 		cout << "A maquina de estados e valida." << endl;
+
+	clearStdInAndPressEnterToContinue();
+}
+
+void showShortestPathToStateMenu() {
+	string pathToGraphData = chooseGraphAndGetItsPath();
+	Graph<State> graph = loadGraph(pathToGraphData);
+
+	cout << endl;
+	cout << "Estados de destino" << endl;
+	cout << "------------------" << endl;
+	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++)
+		cout << i + 1 << ". " << graph.getVertexSet()[i]->getInfo().getLabel()
+				<< endl;
+
+	unsigned int input;
+	cout << endl;
+	cout << "Escolha um estado de destino:" << endl;
+	cout << "> ";
+	cin >> input;
+
+	if (1 <= input && input <= graph.getVertexSet().size())
+		input--;
+	else {
+		cout << endl;
+		cout << "Input invalido." << endl;
+		clearStdInAndPressEnterToContinue();
+		return;
+	}
+
+	// saving destiny state
+	State destState = graph.getVertexSet()[input]->getInfo();
+	if (destState.isInit()) {
+		cout << endl;
+		cout << "O estado selecionado foi o estado inicial." << endl;
+		clearStdInAndPressEnterToContinue();
+		return;
+	}
+
+	// getting shortest path
+	vector<State> path = graph.getPath(graph.getInitialState().getInfo(),
+			destState);
+
+	cout << endl;
+	cout << "Caminho mais curto para \"" << destState << "\":\n";
+	for (unsigned int i = 0; i < path.size(); i++) {
+		cout << path[i] << endl;
+
+		if (i < path.size() - 1) {
+			string label = path[i].getTransitionTo(path[i + 1])->getLabel();
+			cout << "\t-> " << label << endl;
+		}
+	}
+	cout << endl;
+
+	clearStdInAndPressEnterToContinue();
 }

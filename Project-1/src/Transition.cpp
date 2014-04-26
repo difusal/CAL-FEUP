@@ -15,7 +15,6 @@ Transition::Transition(int id, int srcID, int destID, std::string label) :
 }
 
 Transition::~Transition() {
-	// TODO Auto-generated destructor stub
 }
 
 int Transition::getID() {
@@ -30,8 +29,12 @@ int Transition::getDestID() {
 	return destID;
 }
 
-string Transition::getLabel() {
+string Transition::getLabel() const {
 	return label;
+}
+
+bool Transition::leadsTo(int stateID) {
+	return destID == stateID;
 }
 
 bool Transition::operator ==(const Transition &s2) const {

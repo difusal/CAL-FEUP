@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <cstdlib>
 #include <vector>
 #include <queue>
 #include <list>
@@ -39,7 +40,6 @@ public:
 	int getIndegree() const;
 
 	Vertex* path;
-
 	friend class Graph<T> ;
 };
 
@@ -200,7 +200,8 @@ Graph<T>::Graph() {
 
 template<class T>
 Graph<T>::~Graph() {
-	// TODO this
+	for (unsigned int i = 0; i < vertexSet.size(); i++)
+		delete (vertexSet[i]);
 }
 
 template<class T>
@@ -475,19 +476,13 @@ std::vector<T> Graph<T>::getPath(const T &origin, const T &dest) {
 
 	std::list<T> buffer;
 	Vertex<T>* v = getVertex(dest);
-	std::cout << "Path to " << v->info << ": ";
-
-	std::cout << (std::string) v->info << " ";
 	buffer.push_front(v->info);
 
 	while (v->path->info != origin) {
 		v = v->path;
-		std::cout << (std::string) v->info << " ";
 		buffer.push_front(v->info);
 	}
-
 	buffer.push_front(v->path->info);
-	std::cout << std::endl;
 
 	std::vector<T> res;
 	while (!buffer.empty()) {
@@ -599,7 +594,6 @@ void Graph<T>::unweightedShortestPath(const T &s) {
 			}
 		}
 	}
-
 }
 
 template<class T>

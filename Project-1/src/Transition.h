@@ -21,7 +21,8 @@ public:
 	int getID();
 	int getSrcID();
 	int getDestID();
-	std::string getLabel();
+	std::string getLabel() const;
+	bool leadsTo(int stateID);
 
 	bool operator ==(const Transition &s2) const;
 	friend std::ostream & operator <<(std::ostream &os, Transition &s);

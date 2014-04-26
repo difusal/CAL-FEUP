@@ -27,6 +27,7 @@ public:
 	bool isFinal() const;
 	std::string getLabel();
 	std::vector<Transition*> getTransitions();
+	const Transition* getTransitionTo(State dest);
 
 	/**
 	 * Retorna true se ja existir a transicao.

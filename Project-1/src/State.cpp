@@ -8,7 +8,6 @@ State::State(int id, int init, int final, string label) :
 }
 
 State::~State() {
-	// TODO Auto-generated destructor stub
 }
 
 int State::getID() {
@@ -31,6 +30,13 @@ vector<Transition*> State::getTransitions() {
 	return transitions;
 }
 
+const Transition* State::getTransitionTo(State dest) {
+	for (unsigned int i = 0; i < transitions.size(); i++)
+		if (transitions[i]->leadsTo(dest.getID()))
+			return transitions[i];
+
+	return NULL;
+}
 bool State::addTransition(Transition *transition) {
 	bool nfaDetected = false;
 
