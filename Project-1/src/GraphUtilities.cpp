@@ -85,7 +85,7 @@ Graph<State> loadGraph(string pathToGraphData) {
 
 		/*
 		 // Uncomment for console output
-		 cout << "id: " << id << "\tinit: " << init << "\tfinal: " << final << "\tlabel: " << label << endl;
+		 cout << "id:" << id << "\tinit:" << init << "\tfinal:" << final << "\tlabel:" << label << endl;
 		 */
 
 		State state(id, init, final, label);
@@ -102,8 +102,7 @@ Graph<State> loadGraph(string pathToGraphData) {
 
 		/*
 		 // Uncomment for console output
-		 cout << "id:" << id << "\tsrcID:" << srcID << "\tdestID:" << destID
-		 << "\tlabel:" << label << endl;
+		 cout << "id:" << id << "\tsrcID:" << srcID << "\tdestID:" << destID << "\tlabel:" << label << endl;
 		 */
 
 		Transition *transition = new Transition(id, srcID, destID, label);
@@ -135,11 +134,6 @@ void displayGraph(string pathToGraphData) {
 		getline(fin, label);
 		label.erase(label.begin());
 
-		/*
-		 // Uncomment for console output
-		 cout << "id: " << id << "\tinit: " << init << "\tfinal: " << final << "\tlabel: " << label << endl;
-		 */
-
 		gv->addNode(id);
 		gv->setVertexLabel(id, label);
 
@@ -158,11 +152,6 @@ void displayGraph(string pathToGraphData) {
 		fin >> id >> srcID >> destID;
 		getline(fin, label);
 		label.erase(label.begin());
-
-		/*
-		 // Uncomment for console output
-		 cout << "id: " << id << "\tsrcID: " << srcID << "\tdestID: " << destID << "\tlabel: " << label << endl;
-		 */
 
 		gv->addEdge(id, srcID, destID, EdgeType::DIRECTED);
 		gv->setEdgeLabel(id, label);

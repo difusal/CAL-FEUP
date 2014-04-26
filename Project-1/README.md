@@ -13,7 +13,7 @@ Tema 2: Suporte para geração de testes a partir de máquinas de estados
 * um único estado inicial;
 * pelo menos um estado final;
 * todos os vértices devem ser atingíveis;
-* não pode haver mais que uma transição com o mesmo evento, mesmo estado de origem e diferentes estados de destino.
+* não pode haver transições com o mesmo evento, mesmo estado de origem e diferentes estados de destino.
 
 **P**: O que é um caminho ponta-a-ponta e o que é que representa?  
 **R**: É um caminho que começa no estado inicial e termina num estado final. Representa uma execução possível da máquina de estados.
