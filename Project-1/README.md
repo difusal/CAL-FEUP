@@ -39,9 +39,9 @@ ID init final stateDescription
 ID init final stateDescription  
 ...  
 nEdges  
-srcID destID eventDescription  
-srcID destID eventDescription  
-srcID destID eventDescription  
+ID srcID destID eventDescription  
+ID srcID destID eventDescription  
+ID srcID destID eventDescription  
 ...
 
 #####Legenda:
@@ -63,6 +63,8 @@ Sobre os vértices:
 Sobre as arestas:
 - nEdges: string
   - número de transições (arestas)
+- ID: int
+  - ID da aresta
 - srcID: int
   - ID do vértice de origem
 - destID: int
