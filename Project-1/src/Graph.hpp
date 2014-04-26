@@ -6,6 +6,9 @@
 #include <list>
 #include <limits.h>
 
+#include "State.h"
+#include "Transition.h"
+
 template<class T> class Edge;
 template<class T> class Graph;
 
@@ -106,7 +109,7 @@ Edge<T>::Edge(Vertex<T> *d, double w) :
  */
 template<class T>
 class Graph {
-	std::vector<Vertex<T> *> vertexSet;
+	std::vector<Vertex<T>*> vertexSet;
 	int numCycles;
 
 	void dfs(Vertex<T> *v, std::vector<T> &res) const;
@@ -116,6 +119,8 @@ class Graph {
 
 	int numInitStates;
 	int numFinalStates;
+	Vertex<T>* initialState;
+	bool nfaFlag;
 
 public:
 	Graph();
@@ -132,7 +137,7 @@ public:
 	bool removeVertex(const T &in);
 
 	bool addEdge(const T &sourc, const T &dest, double w);
-	bool addEdge(const int sourcID, const int destID, double w);
+	bool addEdge(Transition *transition);
 	bool removeEdge(const T &sourc, const T &dest);
 
 	std::vector<T> dfs() const;
@@ -179,9 +184,8 @@ public:
 
 	int getNumInitStates();
 	int getNumFinalStates();
-
-	void incNumInitStates();
-	void incNumFinalStates();
+	Vertex<T> getInitialState();
+	bool getNfaFlag();
 };
 
 template<class T>
@@ -190,6 +194,8 @@ Graph<T>::Graph() {
 
 	numInitStates = 0;
 	numFinalStates = 0;
+	initialState = NULL;
+	nfaFlag = false;
 }
 
 template<class T>
@@ -227,6 +233,16 @@ bool Graph<T>::addVertex(const T &in) {
 
 	Vertex<T> *v1 = new Vertex<T>(in);
 	vertexSet.push_back(v1);
+
+	if (in.isInit()) {
+		numInitStates++;
+
+		if (!initialState)
+			initialState = v1;
+	}
+
+	if (in.isFinal())
+		numFinalStates++;
 
 	return true;
 }
@@ -297,19 +313,19 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 }
 
 template<class T>
-bool Graph<T>::addEdge(const int sourc, const int dest, double w) {
+bool Graph<T>::addEdge(Transition *transition) {
 	typename std::vector<Vertex<T>*>::iterator it = vertexSet.begin();
 	typename std::vector<Vertex<T>*>::iterator ite = vertexSet.end();
 
 	int found = 0;
 	Vertex<T> *vS, *vD;
 	while (found != 2 && it != ite) {
-		if ((*it)->info.getID() == sourc) {
+		if ((*it)->info.getID() == transition->getSrcID()) {
 			vS = *it;
 			found++;
 		}
 
-		if ((*it)->info.getID() == dest) {
+		if ((*it)->info.getID() == transition->getDestID()) {
 			vD = *it;
 			found++;
 		}
@@ -321,7 +337,10 @@ bool Graph<T>::addEdge(const int sourc, const int dest, double w) {
 		return false;
 
 	vD->indegree++;
-	vS->addEdge(vD, w);
+	vS->addEdge(vD, 1);
+
+	if (vS->info.addTransition(transition))
+		this->nfaFlag = true;
 
 	return true;
 }
@@ -650,11 +669,11 @@ int Graph<T>::getNumFinalStates() {
 }
 
 template<class T>
-void Graph<T>::incNumInitStates() {
-	numInitStates++;
+Vertex<T> Graph<T>::getInitialState() {
+	return *initialState;
 }
 
 template<class T>
-void Graph<T>::incNumFinalStates() {
-	numFinalStates++;
+bool Graph<T>::getNfaFlag() {
+	return nfaFlag;
 }

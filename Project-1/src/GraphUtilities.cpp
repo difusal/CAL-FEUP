@@ -61,7 +61,7 @@ string chooseGraphAndGetItsPath() {
 		}
 	} while (!done);
 
-	return graphsList[input-1];
+	return graphsList[input - 1];
 }
 
 Graph<State> loadGraph(string pathToGraphData) {
@@ -81,6 +81,7 @@ Graph<State> loadGraph(string pathToGraphData) {
 	for (int i = 0; i < nVertexes; i++) {
 		fin >> id >> init >> final;
 		getline(fin, label);
+		label.erase(label.begin());
 
 		/*
 		 // Uncomment for console output
@@ -89,11 +90,6 @@ Graph<State> loadGraph(string pathToGraphData) {
 
 		State state(id, init, final, label);
 		graph.addVertex(state);
-
-		if (init)
-			graph.incNumInitStates();
-		if (final)
-			graph.incNumFinalStates();
 	}
 
 	int nEdges;
@@ -102,14 +98,16 @@ Graph<State> loadGraph(string pathToGraphData) {
 	for (int i = 0; i < nEdges; i++) {
 		fin >> id >> srcID >> destID;
 		getline(fin, label);
+		label.erase(label.begin());
 
 		/*
 		 // Uncomment for console output
-		 cout << "id: " << id << "\tsrcID: " << srcID << "\tdestID: " << destID << "\tlabel: " << label << endl;
+		 cout << "id:" << id << "\tsrcID:" << srcID << "\tdestID:" << destID
+		 << "\tlabel:" << label << endl;
 		 */
 
-		Transition transition(id, srcID, destID, label);
-		graph.addEdge(srcID, destID, 1);
+		Transition *transition = new Transition(id, srcID, destID, label);
+		graph.addEdge(transition);
 	}
 
 	return graph;
@@ -125,8 +123,8 @@ void displayGraph(string pathToGraphData) {
 
 	GraphViewer *gv = new GraphViewer(600, 600, true);
 	gv->createWindow(600, 600);
-	gv->defineVertexColor("white");
-	gv->defineEdgeColor("black");
+	gv->defineVertexColor(WHITE);
+	gv->defineEdgeColor(BLUE);
 
 	int nVertexes;
 	int id, init, final;
@@ -135,6 +133,7 @@ void displayGraph(string pathToGraphData) {
 	for (int i = 0; i < nVertexes; i++) {
 		fin >> id >> init >> final;
 		getline(fin, label);
+		label.erase(label.begin());
 
 		/*
 		 // Uncomment for console output
@@ -158,6 +157,7 @@ void displayGraph(string pathToGraphData) {
 	for (int i = 0; i < nEdges; i++) {
 		fin >> id >> srcID >> destID;
 		getline(fin, label);
+		label.erase(label.begin());
 
 		/*
 		 // Uncomment for console output

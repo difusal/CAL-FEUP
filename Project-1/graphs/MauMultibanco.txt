@@ -1,5 +1,5 @@
 11
-0 1 0 Livre
+0 0 1 Livre
 1 0 0 Espera Pin
 2 1 0 Verifica Pin
 3 0 0 Mostra operações
@@ -16,7 +16,7 @@
 2 2 1 Pin inválido
 3 2 3 Pin válido
 4 3 4 Cancelar
-5 4 0 Cartão recolhido
+5 4 1 Cartão recolhido
 6 3 5 Levantar dinheiro
 7 5 6 Montante inserido
 8 6 4 Saldo insuficiente
@@ -24,6 +24,6 @@
 10 7 8 Dinheiro recolhido
 11 8 9 Sim
 12 9 10 Talão recolhido
-13 8 10 Não
+13 8 10 Sim
 14 10 4 Não
 15 10 1 Sim

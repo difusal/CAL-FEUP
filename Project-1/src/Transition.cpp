@@ -22,12 +22,20 @@ int Transition::getID() {
 	return id;
 }
 
+int Transition::getSrcID() {
+	return srcID;
+}
+
+int Transition::getDestID() {
+	return destID;
+}
+
 string Transition::getLabel() {
 	return label;
 }
 
 bool Transition::operator ==(const Transition &s2) const {
-	return (id == s2.id && label == s2.label);
+	return label == s2.label;
 }
 
 ostream & operator <<(ostream &os, Transition &s) {

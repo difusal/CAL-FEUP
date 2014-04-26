@@ -19,6 +19,8 @@ public:
 	virtual ~Transition();
 
 	int getID();
+	int getSrcID();
+	int getDestID();
 	std::string getLabel();
 
 	bool operator ==(const Transition &s2) const;
