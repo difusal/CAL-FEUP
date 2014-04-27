@@ -27,7 +27,8 @@ int showMainMenu() {
 	cout << "2. Validar grafo" << endl;
 	cout << "3. Determinar caminho mais curto" << endl;
 	cout << "4. Encontrar caminhos totais minimos" << endl;
-	cout << "5. Sair" << endl;
+	cout << "5. Determinar equivalencia entre maquinas de estados" << endl;
+	cout << "6. Sair" << endl;
 	cout << endl;
 
 	int input;
@@ -48,6 +49,8 @@ int showMainMenu() {
 	case 4:
 		break;
 	case 5:
+		break;
+	case 6:
 		return true;
 	default:
 		cout << endl;
