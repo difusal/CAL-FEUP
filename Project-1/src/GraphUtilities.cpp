@@ -64,8 +64,8 @@ string chooseGraphAndGetItsPath() {
 	return graphsList[input - 1];
 }
 
-Graph<State> loadGraph(string pathToGraphData) {
-	Graph<State> graph;
+Graph<State>* loadGraph(string pathToGraphData) {
+	Graph<State>* graph = new Graph<State>;
 
 	ifstream fin;
 	fin.open(pathToGraphData.c_str());
@@ -89,7 +89,7 @@ Graph<State> loadGraph(string pathToGraphData) {
 		 */
 
 		State state(id, init, final, label);
-		graph.addVertex(state);
+		graph->addVertex(state);
 	}
 
 	int nEdges;
@@ -106,10 +106,59 @@ Graph<State> loadGraph(string pathToGraphData) {
 		 */
 
 		Transition *transition = new Transition(id, srcID, destID, label);
-		graph.addEdge(transition);
+		graph->addEdge(transition);
 	}
 
 	return graph;
+}
+
+void inspectGraphsEquality(std::vector<State> dfs1, std::vector<State> dfs2,
+		bool &difInitialStateFlag, bool &difFinalStateFlag,
+		bool &difTransitionsFlag) {
+	// para cada estado
+	for (unsigned int i = 0; i < dfs1.size(); i++) {
+		// ver se um e inicial e o outro nao
+		if (dfs1[i].isInit() != dfs2[i].isInit())
+			difInitialStateFlag = true;
+
+		// ver se um e final e o outro nao
+		if (dfs1[i].isFinal() != dfs2[i].isFinal())
+			difFinalStateFlag = true;
+
+		int dfs1StateNumTransitions = dfs1[i].getTransitions().size();
+		int dfs2StateNumTransitions = dfs2[i].getTransitions().size();
+
+		// ver se o numero de transicoes e o mesmo
+		if (dfs1StateNumTransitions != dfs2StateNumTransitions)
+			difTransitionsFlag = true;
+		else {
+			// se for, verificar que os eventos sao os mesmos
+			for (int j = 0; j < dfs1StateNumTransitions; j++) {
+				// para cada transicao do estado actual de dfs1
+				Transition transition = *dfs1[i].getTransitions()[j];
+
+				// procurar uma equivalente no estado actual de dfs2
+				bool foundEquivalentTransition = false;
+				for (int k = 0; k < dfs2StateNumTransitions; k++) {
+					if (transition == *dfs2[i].getTransitions()[k]) {
+						foundEquivalentTransition = true;
+						break;
+					}
+				}
+
+				// se nao tiver sido encontrado um evento equivalente
+				if (!foundEquivalentTransition) {
+					difTransitionsFlag = true;
+					break;
+				}
+			}
+		}
+
+		// se todas as falhas ja tiverem sido detectadas,
+		// ja nao vale a pena analisar mais o grafo
+		if (difInitialStateFlag && difFinalStateFlag && difTransitionsFlag)
+			break;
+	}
 }
 
 void displayGraph(string pathToGraphData) {
@@ -158,5 +207,13 @@ void displayGraph(string pathToGraphData) {
 	}
 
 	gv->rearrange();
+
+	cin.clear();
+	cin.ignore(10000, '\n');
+	cout << endl;
+	cout << "Pressione <Enter> para continuar...";
 	cin.get();
+
+	gv->closeWindow();
+	delete (gv);
 }

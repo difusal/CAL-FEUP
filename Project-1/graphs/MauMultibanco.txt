@@ -1,6 +1,6 @@
 11
-0 0 1 Livre
-1 0 0 Espera Pin
+0 0 0 Livre
+1 1 0 Espera Pin
 2 1 0 Verifica Pin
 3 0 0 Mostra operações
 4 0 0 Devolve cartão

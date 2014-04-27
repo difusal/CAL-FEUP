@@ -11,3 +11,5 @@ int showMainMenu();
 void showViewGraphMenu();
 void showValidateGraphMenu();
 void showShortestPathToStateMenu();
+void showFindMinimumTotalPathsMenu();
+void showTestStateMachinesEqualityMenu();

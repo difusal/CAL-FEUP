@@ -47,8 +47,10 @@ int showMainMenu() {
 		showShortestPathToStateMenu();
 		break;
 	case 4:
+		showFindMinimumTotalPathsMenu();
 		break;
 	case 5:
+		showTestStateMachinesEqualityMenu();
 		break;
 	case 6:
 		return true;
@@ -69,16 +71,16 @@ void showViewGraphMenu() {
 void showValidateGraphMenu() {
 	string pathToGraphData = chooseGraphAndGetItsPath();
 
-	Graph<State> graph = loadGraph(pathToGraphData);
-	vector<Vertex<State>*> sources = graph.getSources();
+	Graph<State>* graph = loadGraph(pathToGraphData);
+	vector<Vertex<State>*> sources = graph->getSources();
 
-	bool initStateFlag = graph.getNumInitStates() != 1;
-	bool finalStateFlag = graph.getNumFinalStates() < 1;
+	bool initStateFlag = graph->getNumInitStates() != 1;
+	bool finalStateFlag = graph->getNumFinalStates() < 1;
 	bool unreachableStateFlag = sources.size() > 1
 			|| (sources.size() == 1
 					&& sources[0]->getInfo()
-							!= graph.getInitialState().getInfo());
-	bool nfaFlag = graph.getNfaFlag();
+							!= graph->getInitialState().getInfo());
+	bool nfaFlag = graph->getNfaFlag();
 
 	bool invalidStateMachine = initStateFlag || finalStateFlag
 			|| unreachableStateFlag || nfaFlag;
@@ -90,7 +92,7 @@ void showValidateGraphMenu() {
 
 		if (initStateFlag)
 			cout << "\tNao tem um e um so estado inicial (tem "
-					<< graph.getNumInitStates() << ")." << endl;
+					<< graph->getNumInitStates() << ")." << endl;
 
 		if (finalStateFlag)
 			cout << "\tNao tem pelo menos um estado final." << endl;
@@ -103,18 +105,19 @@ void showValidateGraphMenu() {
 	} else
 		cout << "A maquina de estados e valida." << endl;
 
+	delete (graph);
 	clearStdInAndPressEnterToContinue();
 }
 
 void showShortestPathToStateMenu() {
 	string pathToGraphData = chooseGraphAndGetItsPath();
-	Graph<State> graph = loadGraph(pathToGraphData);
+	Graph<State>* graph = loadGraph(pathToGraphData);
 
 	cout << endl;
 	cout << "Estados de destino" << endl;
 	cout << "------------------" << endl;
-	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++)
-		cout << i + 1 << ". " << graph.getVertexSet()[i]->getInfo().getLabel()
+	for (unsigned int i = 0; i < graph->getVertexSet().size(); i++)
+		cout << i + 1 << ". " << graph->getVertexSet()[i]->getInfo().getLabel()
 				<< endl;
 
 	unsigned int input;
@@ -123,7 +126,7 @@ void showShortestPathToStateMenu() {
 	cout << "> ";
 	cin >> input;
 
-	if (1 <= input && input <= graph.getVertexSet().size())
+	if (1 <= input && input <= graph->getVertexSet().size())
 		input--;
 	else {
 		cout << endl;
@@ -133,7 +136,7 @@ void showShortestPathToStateMenu() {
 	}
 
 	// saving destiny state
-	State destState = graph.getVertexSet()[input]->getInfo();
+	State destState = graph->getVertexSet()[input]->getInfo();
 	if (destState.isInit()) {
 		cout << endl;
 		cout << "O estado selecionado foi o estado inicial." << endl;
@@ -142,7 +145,7 @@ void showShortestPathToStateMenu() {
 	}
 
 	// getting shortest path
-	vector<State> path = graph.getPath(graph.getInitialState().getInfo(),
+	vector<State> path = graph->getPath(graph->getInitialState().getInfo(),
 			destState);
 
 	cout << endl;
@@ -156,6 +159,63 @@ void showShortestPathToStateMenu() {
 		}
 	}
 	cout << endl;
+
+	delete (graph);
+	clearStdInAndPressEnterToContinue();
+}
+
+void showFindMinimumTotalPathsMenu() {
+	clearStdInAndPressEnterToContinue();
+}
+
+void showTestStateMachinesEqualityMenu() {
+	string pathToGraphData1, pathToGraphData2;
+	Graph<State> *graph1, *graph2;
+
+	pathToGraphData1 = chooseGraphAndGetItsPath();
+	pathToGraphData2 = chooseGraphAndGetItsPath();
+
+	if (pathToGraphData1 == pathToGraphData2) {
+		cout << endl;
+		cout << "Se as maquinas de estado escolhidas forem" << endl
+				<< "as mesmas, e obvio que sao equivalentes." << endl;
+	} else {
+		graph1 = loadGraph(pathToGraphData1);
+		graph2 = loadGraph(pathToGraphData2);
+		vector<State> dfs1 = graph1->dfs();
+		vector<State> dfs2 = graph2->dfs();
+
+		bool difNumStatesFlag = dfs1.size() != dfs2.size();
+		bool difInitialStateFlag = false;
+		bool difFinalStateFlag = false;
+		bool difTransitionsFlag = false;
+		inspectGraphsEquality(dfs1, dfs2, difInitialStateFlag,
+				difFinalStateFlag, difTransitionsFlag);
+
+		bool difStateMachinesFlag = difNumStatesFlag || difInitialStateFlag
+				|| difFinalStateFlag || difTransitionsFlag;
+
+		if (difStateMachinesFlag) {
+			cout << endl;
+			cout << "As maquinas de estado nao sao equivalentes." << endl;
+			cout << "Detalhes:" << endl;
+
+			if (difNumStatesFlag)
+				cout << "\tO numero de estados nao e o mesmo." << endl;
+			if (difInitialStateFlag)
+				cout << "\tO estado inicial e diferente." << endl;
+			if (difFinalStateFlag)
+				cout << "\tO estado final nao e o mesmo." << endl;
+			if (difTransitionsFlag)
+				cout << "\tAs transicao entre estados sao diferentes." << endl;
+		} else {
+			cout << endl;
+			cout << "As maquinas de estado sao equivalentes." << endl;
+		}
+
+		delete (graph1);
+		delete (graph2);
+	}
 
 	clearStdInAndPressEnterToContinue();
 }
