@@ -1,4 +1,5 @@
-3
+4
 graphs/Multibanco.txt
 graphs/MauMultibanco.txt
-graphs/MultibancoBehaviorTest.txt
+graphs/MultibancoBadBehaviorTest.txt
+graphs/MultibancoGoodBehavior.txt
