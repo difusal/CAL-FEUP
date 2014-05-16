@@ -1,27 +1,50 @@
-Tema 7: Gestão de Contactos
-===========================
+Subject 7: Contacts Management
+==============================
 
-Aplicações que utilizam extensivamente funcionalidades de gestão de contatos, como Gmail e outros clientes de correio eletrónico, ou mesmo smartphones, necessitam de mecanismos eficientes para pesquisa, inserção e eliminação de contatos.  
-Neste trabalho pretende-se implementar funcionalidades eficientes de pesquisa de contatos numa lista de registos que contenha várias informações, como nome, morada, e-mail, telefones, e possivelmente outras informações. A pesquisa deve ser dinânmica e, à medida que novos caracteres são adicionados na consulta, a aplicação deve exibir os contatos candidatos, ou seja, aqueles que potencialmente interessarão ao utilizador. Quanto mais caracteres forem sendo adicionados, a lista de candidatos aproximará mais do contato de interesse. Considere também a possibilidade do utilizador introduzir mal os caracteres, pelo que o mecanismo de buca deverá sugerir correções que se aproximem mais dos registos existentes na lista de contatos.  
-Aplique os algoritmos de pesquisa de strings adequados, e considere a existência de um ficheiro de texto que contém os registos dos contatos. Impelemente também uma interface apropriada, com recursos à adição e eliminação de contatos, evitanto possíveis repetições de registos.
+Gmail and other email services, or even smartphones are applications that extensively use contacts management. Such applications need efficient contacts search, insertion and deletion algorithms.
 
-###Perguntas:
+This project aims to implement some of these features on a list of registers that might contain info like **name**, **address**, **e-mail**, **phone number** and **other informations**.
 
-**P**: yyy?  
-**R**: xxx.
+The search should be dynamic and the application should display the best candidates as the user types each new character. The more characters the user inputs, the closest the search results should be to his/her interest.
 
-**P**: yyy?  
-**R**: cccccc.
+There is also a possibility the user might mispell the search keywords. The search algorithm should therefore suggest any corrections that might approach them to the most similar registers of the contact list.
 
-###Problemas a resolver:
+The file that contains all the registers is **contacts.txt**.
+
+###Questions:
+
+**Q**: yyy?  
+**A**: xxx.
+
+**Q**: yyy?  
+**A**: cccccc.
+
+###Problems to solve:
 
 1. asdads;
 2. adsasd.
 
-###Sintaxe dos ficheiros de texto:
+###File sintax:
 
+nContacts
+id firstName lastName phoneNumber email address
+id firstName lastName phoneNumber email address
+id firstName lastName phoneNumber email address
 ...
 
-#####Legenda:
+#####Legend:
 
-...
+- nContacts: unsigned long
+	- number of contacts stored
+- id: unsigned long
+	- contact ID
+- firstName: string
+	- contact first name
+- lastName: string
+	- contact last name
+- phoneNumber: string
+	- contact phone number
+- email: string
+	- contact e-mail
+- address: string
+	- contact address
