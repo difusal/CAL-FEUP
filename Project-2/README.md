@@ -26,10 +26,10 @@ The file that contains all the registers is **contacts.txt**.
 
 ###File sintax:
 
-nContacts
-id firstName lastName phoneNumber email address
-id firstName lastName phoneNumber email address
-id firstName lastName phoneNumber email address
+nContacts  
+id firstName lastName phoneNumber email address  
+id firstName lastName phoneNumber email address  
+id firstName lastName phoneNumber email address  
 ...
 
 #####Legend:
