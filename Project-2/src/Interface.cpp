@@ -10,7 +10,7 @@ const string contactsListPath = "contacts.txt";
 
 Interface::Interface() {
 	done = false;
-	LoadContacts();
+	loadContacts();
 }
 
 Interface::~Interface() {
@@ -18,27 +18,27 @@ Interface::~Interface() {
 		delete (*it);
 }
 
-bool Interface::IsDone() {
+bool Interface::isDone() {
 	return done;
 }
 
-void Interface::ClearStdIn() {
+void Interface::clearStdIn() {
 	// clearing buffer
 	cin.clear();
 	cin.ignore(10000, '\n');
 }
 
-void Interface::PressEnterToContinue() {
+void Interface::pressEnterToContinue() {
 	cout << "Press <Enter> to continue...";
 	cin.get();
 }
 
-void Interface::ClearStdInAndPressEnterToContinue() {
-	ClearStdIn();
-	PressEnterToContinue();
+void Interface::clearStdInAndPressEnterToContinue() {
+	clearStdIn();
+	pressEnterToContinue();
 }
 
-void Interface::LoadContacts() {
+void Interface::loadContacts() {
 	// clearing vector current content
 	contacts.clear();
 
@@ -80,7 +80,7 @@ void Interface::LoadContacts() {
 	}
 }
 
-void Interface::SaveContacts() {
+void Interface::saveContacts() {
 	cout << endl;
 	cout << "Updating: " << contactsListPath << endl;
 
@@ -112,7 +112,7 @@ void Interface::SaveContacts() {
 	}
 }
 
-void Interface::ShowMainMenu() {
+void Interface::showMainMenu() {
 	cout << endl;
 	cout << "-------------------" << endl;
 	cout << "Contacts management" << endl;
@@ -133,13 +133,13 @@ void Interface::ShowMainMenu() {
 
 	switch ((Action) input) {
 	case LIST_ALL:
-		ShowContactsList();
+		showContactsList();
 		break;
 	case SEARCH:
 		break;
 	case ADD:
-		ClearStdIn();
-		AddContact();
+		clearStdIn();
+		addContact();
 		break;
 	case REMOVE:
 		break;
@@ -149,19 +149,19 @@ void Interface::ShowMainMenu() {
 	default:
 		cout << endl;
 		cout << "Invalid input." << endl;
-		ClearStdInAndPressEnterToContinue();
+		clearStdInAndPressEnterToContinue();
 		break;
 	}
 }
-void Interface::ShowContactsList() {
+void Interface::showContactsList() {
 	cout << endl;
 	foreach(contacts, it)
 		cout << **it << endl;
 
-	ClearStdInAndPressEnterToContinue();
+	clearStdInAndPressEnterToContinue();
 }
 
-void Interface::AddContact() {
+void Interface::addContact() {
 	string name, firstName, lastName, phoneNumber, email, address;
 
 	cout << endl;
@@ -187,7 +187,7 @@ void Interface::AddContact() {
 			address);
 	contacts.insert(newContact);
 
-	SaveContacts();
+	saveContacts();
 	cout << "Contact successfully added." << endl;
-	PressEnterToContinue();
+	pressEnterToContinue();
 }
