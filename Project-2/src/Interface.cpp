@@ -10,7 +10,7 @@ const string contactsListPath = "contacts.txt";
 
 Interface::Interface() {
 	done = false;
-	loadContacts();
+	LoadContacts();
 }
 
 Interface::~Interface() {
@@ -18,20 +18,27 @@ Interface::~Interface() {
 		delete (*it);
 }
 
-bool Interface::isDone() {
+bool Interface::IsDone() {
 	return done;
 }
 
-void Interface::clearStdInAndPressEnterToContinue() {
+void Interface::ClearStdIn() {
 	// clearing buffer
 	cin.clear();
 	cin.ignore(10000, '\n');
+}
 
+void Interface::PressEnterToContinue() {
 	cout << "Press <Enter> to continue...";
 	cin.get();
 }
 
-void Interface::loadContacts() {
+void Interface::ClearStdInAndPressEnterToContinue() {
+	ClearStdIn();
+	PressEnterToContinue();
+}
+
+void Interface::LoadContacts() {
 	// clearing vector current content
 	contacts.clear();
 
@@ -73,7 +80,7 @@ void Interface::loadContacts() {
 	}
 }
 
-void Interface::saveContacts() {
+void Interface::SaveContacts() {
 	cout << endl;
 	cout << "Updating: " << contactsListPath << endl;
 
@@ -105,7 +112,7 @@ void Interface::saveContacts() {
 	}
 }
 
-void Interface::showMainMenu() {
+void Interface::ShowMainMenu() {
 	cout << endl;
 	cout << "-------------------" << endl;
 	cout << "Contacts management" << endl;
@@ -126,30 +133,61 @@ void Interface::showMainMenu() {
 
 	switch ((Action) input) {
 	case LIST_ALL:
-		showContactsList();
+		ShowContactsList();
 		break;
 	case SEARCH:
 		break;
 	case ADD:
+		ClearStdIn();
+		AddContact();
 		break;
 	case REMOVE:
 		break;
 	case EXIT:
-		saveContacts();
 		done = true;
 		break;
 	default:
 		cout << endl;
 		cout << "Invalid input." << endl;
-		clearStdInAndPressEnterToContinue();
+		ClearStdInAndPressEnterToContinue();
 		break;
 	}
 }
-void Interface::showContactsList() {
+void Interface::ShowContactsList() {
 	cout << endl;
 	foreach(contacts, it)
 		cout << **it << endl;
 
-	clearStdInAndPressEnterToContinue();
+	ClearStdInAndPressEnterToContinue();
 }
 
+void Interface::AddContact() {
+	string name, firstName, lastName, phoneNumber, email, address;
+
+	cout << endl;
+	cout << "Name: ";
+	getline(cin, name);
+
+	// processing name
+	vector<string> names = getTokens(name);
+	firstName = names[0];
+	lastName = names[names.size() - 1];
+
+	cout << "Phone number: ";
+	getline(cin, phoneNumber);
+
+	cout << "Email: ";
+	getline(cin, email);
+
+	cout << "Address: ";
+	getline(cin, address);
+
+	// adding new contact to contacts
+	Contact* newContact = new Contact(firstName, lastName, phoneNumber, email,
+			address);
+	contacts.insert(newContact);
+
+	SaveContacts();
+	cout << "Contact successfully added." << endl;
+	PressEnterToContinue();
+}

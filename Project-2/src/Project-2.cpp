@@ -7,8 +7,8 @@ int main() {
 	Interface interface;
 
 	do {
-		interface.showMainMenu();
-	} while (!interface.isDone());
+		interface.ShowMainMenu();
+	} while (!interface.IsDone());
 
 	cout << endl;
 	cout << "Program terminated." << endl;

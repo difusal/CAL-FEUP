@@ -26,12 +26,15 @@ public:
 	Interface();
 	virtual ~Interface();
 
-	bool isDone();
-	void clearStdInAndPressEnterToContinue();
+	bool IsDone();
+	void ClearStdIn();
+	void PressEnterToContinue();
+	void ClearStdInAndPressEnterToContinue();
 
-	void loadContacts();
-	void saveContacts();
+	void LoadContacts();
+	void SaveContacts();
 
-	void showMainMenu();
-	void showContactsList();
+	void ShowMainMenu();
+	void ShowContactsList();
+	void AddContact();
 };
