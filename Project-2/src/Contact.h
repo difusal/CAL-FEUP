@@ -25,22 +25,42 @@ public:
 	void setPhoneNumber(const std::string& phoneNumber);
 
 	friend std::ostream& operator<<(std::ostream& out, const Contact& contact) {
-		out.width(9);
-		out << "Name: " << contact.firstName;
-		if (!fieldIsNull(contact.lastName))
-			out << " " << contact.lastName;
-		out << std::endl;
-
-		if (!fieldIsNull(contact.phoneNumber)) {
+		// name
+		if (!fieldIsNull(contact.firstName) || !fieldIsNull(contact.lastName)) {
 			out.width(9);
-			out << "Phone: " << contact.phoneNumber << std::endl;
+			out << "Name: ";
+
+			if (!fieldIsNull(contact.firstName))
+				out << contact.firstName;
+
+			if (!fieldIsNull(contact.lastName))
+				out << " " << contact.lastName;
+
+			out << std::endl;
 		}
 
+		// phone number
+		if (!fieldIsNull(contact.phoneNumber)) {
+			out.width(9);
+			out << "Phone: ";
+
+			for (int i = 0; i < 3; i++) {
+				out << contact.phoneNumber.substr(i * 3, 3);
+
+				if (i < 2)
+					out << " ";
+			}
+
+			out << std::endl;
+		}
+
+		// email
 		if (!fieldIsNull(contact.email)) {
 			out.width(9);
 			out << "Email: " << contact.email << std::endl;
 		}
 
+		// address
 		if (!fieldIsNull(contact.address)) {
 			out.width(9);
 			out << "Address: " << contact.address << std::endl;
