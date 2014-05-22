@@ -27,17 +27,15 @@ The file that contains all the registers is **contacts.txt**.
 ###File sintax:
 
 nContacts  
-id firstName lastName phoneNumber email address  
-id firstName lastName phoneNumber email address  
-id firstName lastName phoneNumber email address  
+firstName lastName phoneNumber email address  
+firstName lastName phoneNumber email address  
+firstName lastName phoneNumber email address  
 ...
 
 #####Legend:
 
 - nContacts: unsigned long
 	- number of contacts stored
-- id: unsigned long
-	- contact ID
 - firstName: string
 	- contact first name
 - lastName: string
