@@ -18,17 +18,17 @@ bool fieldIsNull(std::string field) {
 	return field.compare("null") == 0;
 }
 
-vector<string> getTokens(string str) {
+vector<string> getTokens(string str, string separator) {
 	vector<string> vec;
 
 	char temp[1024];
 	strcpy(temp, str.c_str());
 
-	char *p = strtok(temp, " ");
+	char *p = strtok(temp, separator.c_str());
 	while (p) {
 		vec.push_back(string(p));
 
-		p = strtok(NULL, " ");
+		p = strtok(NULL, separator.c_str());
 	}
 
 	return vec;
@@ -39,9 +39,9 @@ vector<string> getTokens(string str) {
 char getChar() {
 	char buf = 0;
 
-	struct termios old = {0};
+	struct termios old = { 0 };
 	if (tcgetattr(0, &old) < 0)
-	perror("tcgetattr()");
+		perror("tcgetattr()");
 
 	old.c_lflag &= ~ICANON;
 	old.c_lflag &= ~ECHO;
@@ -49,16 +49,16 @@ char getChar() {
 	old.c_cc[VTIME] = 0;
 
 	if (tcsetattr(0, TCSANOW, &old) < 0)
-	perror("tcsetattr ICANON");
+		perror("tcsetattr ICANON");
 
 	if (read(0, &buf, 1) < 0)
-	perror("read()");
+		perror("read()");
 
 	old.c_lflag |= ICANON;
 	old.c_lflag |= ECHO;
 
 	if (tcsetattr(0, TCSADRAIN, &old) < 0)
-	perror("tcsetattr ~ICANON");
+		perror("tcsetattr ~ICANON");
 
 	return (buf);
 }

@@ -6,7 +6,7 @@
 #define foreach(v, it) for(typeof((v).begin()) it = (v).begin(); it != (v).end(); it++)
 
 bool fieldIsNull(std::string field);
-std::vector<std::string> getTokens(std::string str);
+std::vector<std::string> getTokens(std::string str, std::string separator);
 
 char getChar();
 bool isValid(char c);
