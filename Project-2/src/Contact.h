@@ -70,3 +70,19 @@ public:
 		return out;
 	}
 };
+
+struct ContactsComp {
+	bool operator()(const Contact* lhs, const Contact* rhs) const {
+		std::string lhsFirstName = toLower(lhs->getFirstName());
+		std::string lhsLastName = toLower(lhs->getLastName());
+
+		std::string rhsFirstName = toLower(rhs->getFirstName());
+		std::string rhsLastName = toLower(rhs->getLastName());
+
+		if (lhsFirstName.compare(rhsFirstName) == 0)
+			return (fieldIsNull(lhsLastName) ? "" : lhsLastName)
+					< (fieldIsNull(rhsLastName) ? "" : rhsLastName);
+		else
+			return lhsFirstName < rhsFirstName;
+	}
+};
