@@ -172,7 +172,7 @@ void Interface::addContact() {
 	getline(cin, name);
 
 	// processing name
-	vector<string> names = getTokens(name);
+	vector<string> names = getTokens(name, " ");
 	firstName = names[0];
 	lastName = names[names.size() - 1];
 
@@ -240,6 +240,9 @@ void Interface::searchContact() {
 		else
 			search += c;
 
+		cout << endl;
+		cout << "Results:" << endl;
+		cout << "SAME TEST" << endl;
 		cout << endl;
 	} while (typing);
 
