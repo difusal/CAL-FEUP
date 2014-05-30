@@ -37,4 +37,5 @@ public:
 	void showMainMenu();
 	void showContactsList();
 	void addContact();
+	void searchContact();
 };
