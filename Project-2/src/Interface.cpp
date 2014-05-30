@@ -162,6 +162,7 @@ void Interface::showContactsList() {
 }
 
 void Interface::addContact() {
+	bool valid;
 	string name, firstName, lastName, phoneNumber, email, address;
 
 	cout << endl;
@@ -173,11 +174,31 @@ void Interface::addContact() {
 	firstName = names[0];
 	lastName = names[names.size() - 1];
 
-	cout << "Phone number: ";
-	getline(cin, phoneNumber);
+	valid = false;
+	do {
+		cout << "Phone number: ";
+		getline(cin, phoneNumber);
 
-	cout << "Email: ";
-	getline(cin, email);
+		if (phoneNumber.size() == 9)
+			valid = true;
+		else {
+			cout << "Error: phone number must have exactly 9 digits." << endl;
+			cout << endl;
+		}
+	} while (!valid);
+
+	valid = false;
+	do {
+		cout << "Email: ";
+		getline(cin, email);
+
+		if (email.find(" ") != string::npos || email.find("@") == string::npos
+				|| email.size() < 5) {
+			cout << "Error: invalid email." << endl;
+			cout << endl;
+		} else
+			valid = true;
+	} while (!valid);
 
 	cout << "Address: ";
 	getline(cin, address);
