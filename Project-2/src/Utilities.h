@@ -5,6 +5,8 @@
 
 #define foreach(v, it) for(typeof((v).begin()) it = (v).begin(); it != (v).end(); it++)
 
+const std::string NULL_FIELD = "null";
+
 #ifdef __linux__
 // linux system
 const char BACKSPACE_CODE = 127;

@@ -207,6 +207,8 @@ void Interface::showMainMenu() {
 		addContact();
 		break;
 	case REMOVE:
+		clearStdIn();
+		removeContact();
 		break;
 	case EXIT:
 		done = true;
@@ -230,15 +232,29 @@ void Interface::addContact() {
 	bool valid;
 	string name, firstName, lastName, phoneNumber, email, address;
 
-	cout << endl;
-	cout << "Name: ";
-	getline(cin, name);
+	// -------------------------------------------
+	// name
+	valid = false;
+	do {
+		cout << endl;
+		cout << "Name: ";
+		getline(cin, name);
 
-	// processing name
-	vector<string> names = getTokens(name, " ");
-	firstName = names[0];
-	lastName = names[names.size() - 1];
+		// processing name
+		vector<string> names = getTokens(name, " ");
 
+		if (names.size() >= 1) {
+			valid = true;
+			firstName = names[0];
+			lastName = NULL_FIELD;
+		}
+
+		if (names.size() >= 2)
+			lastName = names[names.size() - 1];
+	} while (!valid);
+
+	// -------------------------------------------
+	// phone number
 	valid = false;
 	do {
 		cout << "Phone number: ";
@@ -246,39 +262,54 @@ void Interface::addContact() {
 
 		if (phoneNumber.size() == 9)
 			valid = true;
-		else {
+		else if (phoneNumber.size() == 0) {
+			valid = true;
+			phoneNumber = NULL_FIELD;
+		} else {
 			cout << "Error: phone number must have exactly 9 digits." << endl;
 			cout << endl;
 		}
 	} while (!valid);
 
+	// -------------------------------------------
+	// email
 	valid = false;
 	do {
 		cout << "Email: ";
 		getline(cin, email);
 
-		if (email.find(" ") != string::npos || email.find("@") == string::npos
-				|| email.size() < 5) {
+		if (email.size() == 0) {
+			valid = true;
+			email = NULL_FIELD;
+		} else if (email.find(" ") != string::npos
+				|| email.find("@") == string::npos || email.size() < 5) {
 			cout << "Error: invalid email." << endl;
 			cout << endl;
 		} else
 			valid = true;
 	} while (!valid);
 
+	// -------------------------------------------
+	// address
 	cout << "Address: ";
 	getline(cin, address);
+	if (address.size() == 0)
+		address = NULL_FIELD;
 
-	// adding new contact to contacts
+	// -------------------------------------------
+	// add new contact to contacts
 	Contact* newContact = new Contact(firstName, lastName, phoneNumber, email,
 			address);
 	contacts.insert(newContact);
 
+	// -------------------------------------------
+	// save contacts
 	saveContacts();
 	cout << "Contact successfully added." << endl;
 	pressEnterToContinue();
 }
 
-void Interface::searchContact() {
+Contact* Interface::searchContact() {
 	string search = "";
 	set<Contact*, ContactsComp> searchResults;
 
@@ -309,7 +340,35 @@ void Interface::searchContact() {
 			search += c;
 	} while (typing);
 
-	cout << "Search done! Selected contact: "
-			<< (*searchResults.begin())->getName() << endl;
-	pressEnterToContinue();
+	cout << endl;
+	cout << "Selected contact:" << endl;
+	cout << **searchResults.begin() << endl;
+
+	return (*searchResults.begin());
+}
+
+void Interface::removeContact() {
+	Contact* contact = searchContact();
+
+	bool done = false;
+	do {
+		char input;
+
+		cout << "Remove " << contact->getName() << "? [Y/n] ";
+		cin >> input;
+
+		input = tolower(input);
+		if (input == 'y') {
+			contacts.erase(contact);
+			cout << "Contact successfully removed." << endl;
+			saveContacts();
+			done = true;
+		} else if (input == 'n') {
+			cout << "Operation canceled." << endl;
+			done = true;
+		}
+	} while (!done);
+
+	cout << endl;
+	clearStdInAndPressEnterToContinue();
 }

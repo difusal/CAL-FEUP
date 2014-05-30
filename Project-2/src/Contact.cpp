@@ -31,7 +31,8 @@ void Contact::setEmail(const std::string& email) {
 }
 
 const std::string Contact::getName() const {
-	return firstName + " " + lastName;
+	return (lastName.compare(NULL_FIELD) == 0) ?
+			firstName : firstName + " " + lastName;
 }
 
 const std::string& Contact::getFirstName() const {
