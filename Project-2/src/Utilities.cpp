@@ -9,7 +9,7 @@
 #include <termios.h>
 #elif _WIN32
 // windows system
-// nothing
+#include <conio.h>
 #endif
 
 using namespace std;
@@ -39,9 +39,9 @@ vector<string> getTokens(string str, string separator) {
 char getChar() {
 	char buf = 0;
 
-	struct termios old = { 0 };
+	struct termios old = {0};
 	if (tcgetattr(0, &old) < 0)
-		perror("tcgetattr()");
+	perror("tcgetattr()");
 
 	old.c_lflag &= ~ICANON;
 	old.c_lflag &= ~ECHO;
@@ -49,37 +49,37 @@ char getChar() {
 	old.c_cc[VTIME] = 0;
 
 	if (tcsetattr(0, TCSANOW, &old) < 0)
-		perror("tcsetattr ICANON");
+	perror("tcsetattr ICANON");
 
 	if (read(0, &buf, 1) < 0)
-		perror("read()");
+	perror("read()");
 
 	old.c_lflag |= ICANON;
 	old.c_lflag |= ECHO;
 
 	if (tcsetattr(0, TCSADRAIN, &old) < 0)
-		perror("tcsetattr ~ICANON");
+	perror("tcsetattr ~ICANON");
 
 	return (buf);
 }
 #elif _WIN32
 // windows system
 char getChar() {
-	return getchar();
+	return _getch();
 }
 #endif
 
 bool isValid(char c) {
 	// space
-	if (c == 32)
+	if (c == ' ')
 		return true;
 
 	// backspace
-	if (c == 127)
+	if (c == BACKSPACE_CODE)
 		return true;
 
 	// enter
-	if (c == '\n')
+	if (c == ENTER_CODE)
 		return true;
 
 	// a-z or 0-9

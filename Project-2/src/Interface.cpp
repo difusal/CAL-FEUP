@@ -227,14 +227,15 @@ void Interface::searchContact() {
 		char c;
 		do {
 			c = getChar();
+			cout << "CHAR CODE: " << (int) c << endl;
 		} while (!isValid(c));
 
 		// if <backspace> was pressed
-		if (c == 127)
+		if (c == BACKSPACE_CODE)
 			// delete last string character
 			search = search.substr(0, search.size() - 1);
 		// if <enter> was pressed
-		else if (c == '\n')
+		else if (c == ENTER_CODE)
 			// done typing
 			typing = false;
 		else
@@ -242,7 +243,6 @@ void Interface::searchContact() {
 
 		cout << endl;
 		cout << "Results:" << endl;
-		cout << "SAME TEST" << endl;
 		cout << endl;
 	} while (typing);
 
