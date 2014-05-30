@@ -7,3 +7,6 @@
 
 bool fieldIsNull(std::string field);
 std::vector<std::string> getTokens(std::string str);
+
+char getch();
+bool isValid(char c);

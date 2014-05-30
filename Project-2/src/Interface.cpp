@@ -136,6 +136,7 @@ void Interface::showMainMenu() {
 		showContactsList();
 		break;
 	case SEARCH:
+		searchContact();
 		break;
 	case ADD:
 		clearStdIn();
@@ -211,4 +212,37 @@ void Interface::addContact() {
 	saveContacts();
 	cout << "Contact successfully added." << endl;
 	pressEnterToContinue();
+}
+
+void Interface::searchContact() {
+	string search = "";
+
+	bool typing = true;
+	do {
+		cout << "Search: " << search;
+		cout.flush();
+
+		// read character
+		char c;
+		do {
+			c = getch();
+		} while (!isValid(c));
+
+		// if <backspace> was pressed
+		if (c == 127)
+			// delete last string character
+			search = search.substr(0, search.size() - 1);
+		// if <enter> was pressed
+		else if (c == '\n')
+			// done typing
+			typing = false;
+		else
+			search += c;
+
+		cout << endl;
+	} while (typing);
+
+	cout << "Search done!" << endl;
+	cout << "Search typed: ." << search << "." << endl;
+	clearStdInAndPressEnterToContinue();
 }
