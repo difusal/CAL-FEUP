@@ -30,6 +30,10 @@ void Contact::setEmail(const std::string& email) {
 	this->email = email;
 }
 
+const std::string Contact::getName() const {
+	return firstName + " " + lastName;
+}
+
 const std::string& Contact::getFirstName() const {
 	return firstName;
 }

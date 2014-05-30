@@ -6,11 +6,10 @@
 
 using namespace std;
 
-const string contactsListPath = "contacts.txt";
-
 Interface::Interface() {
 	done = false;
 	loadContacts();
+	loadSettings();
 }
 
 Interface::~Interface() {
@@ -110,6 +109,70 @@ void Interface::saveContacts() {
 
 		fout << endl;
 	}
+}
+
+int Interface::loadSettings() {
+	// trying to open file
+	ifstream fin;
+	fin.open(settingsPath.c_str());
+	if (!fin) {
+		cerr << "Error: Unable to open file: " << settingsPath << endl;
+		cerr << "Warning: Using default settings values." << endl;
+
+		maxResToDisplay = 3;
+		return -1;
+	}
+
+	// read number of search results to display
+	fin >> maxResToDisplay;
+
+	return 0;
+}
+
+void Interface::saveSettings() {
+	cout << endl;
+	cout << "Updating: " << settingsPath << endl;
+
+	// try to open output stream
+	ofstream fout;
+	fout.open(settingsPath.c_str());
+	if (!fout) {
+		cerr << "Error: Unable to open file: " << settingsPath << endl;
+		exit(1);
+	}
+
+	// save number of search results to display
+	fout << maxResToDisplay << endl;
+}
+
+set<Contact*, ContactsComp> Interface::getSearchResults(string search) {
+	set<Contact*, ContactsComp> results;
+
+	// if search is equal to "" (empty string)
+	if (search.size() == 0)
+		results = contacts;
+	else {
+		// search all contacts
+		foreach(contacts, it)
+			if (toLower((*it)->getName()).find(search) != string::npos)
+				results.insert(*it);
+	}
+
+	return results;
+}
+
+void Interface::displaySearchResults(set<Contact*, ContactsComp> results) {
+	int nResToDisplay =
+			(results.size() < maxResToDisplay) ?
+					results.size() : maxResToDisplay;
+
+	cout << "Showing " << nResToDisplay << " of " << results.size()
+			<< " results." << endl;
+	cout << endl;
+
+	set<Contact*, ContactsComp>::iterator it = results.begin();
+	for (int i = 0; i < nResToDisplay; i++, it++)
+		cout << (*it)->getName() << endl;
 }
 
 void Interface::showMainMenu() {
@@ -217,17 +280,21 @@ void Interface::addContact() {
 
 void Interface::searchContact() {
 	string search = "";
+	set<Contact*, ContactsComp> searchResults;
 
 	bool typing = true;
 	do {
-		cout << "Search: " << search;
-		cout.flush();
+		cout << endl;
+		cout << "-----------------------------------------" << endl;
+		cout << "Search: " << search << "|" << endl;
+		searchResults = getSearchResults(search);
+		displaySearchResults(searchResults);
+		cout << "-----------------------------------------" << endl;
 
 		// read character
 		char c;
 		do {
 			c = getChar();
-			cout << "CHAR CODE: " << (int) c << endl;
 		} while (!isValid(c));
 
 		// if <backspace> was pressed
@@ -240,13 +307,9 @@ void Interface::searchContact() {
 			typing = false;
 		else
 			search += c;
-
-		cout << endl;
-		cout << "Results:" << endl;
-		cout << endl;
 	} while (typing);
 
-	cout << "Search done!" << endl;
-	cout << "Search typed: ." << search << "." << endl;
+	cout << "Search done! Selected contact: "
+			<< (*searchResults.begin())->getName() << endl;
 	pressEnterToContinue();
 }
