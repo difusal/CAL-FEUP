@@ -14,34 +14,14 @@
 
 using namespace std;
 
-bool fieldIsNull(std::string field) {
-	return field.compare("null") == 0;
-}
-
-vector<string> getTokens(string str, string separator) {
-	vector<string> vec;
-
-	char temp[1024];
-	strcpy(temp, str.c_str());
-
-	char *p = strtok(temp, separator.c_str());
-	while (p) {
-		vec.push_back(string(p));
-
-		p = strtok(NULL, separator.c_str());
-	}
-
-	return vec;
-}
-
 #ifdef __linux__
 // linux system
 char getChar() {
 	char buf = 0;
 
-	struct termios old = {0};
+	struct termios old = { 0 };
 	if (tcgetattr(0, &old) < 0)
-	perror("tcgetattr()");
+		perror("tcgetattr()");
 
 	old.c_lflag &= ~ICANON;
 	old.c_lflag &= ~ECHO;
@@ -49,16 +29,16 @@ char getChar() {
 	old.c_cc[VTIME] = 0;
 
 	if (tcsetattr(0, TCSANOW, &old) < 0)
-	perror("tcsetattr ICANON");
+		perror("tcsetattr ICANON");
 
 	if (read(0, &buf, 1) < 0)
-	perror("read()");
+		perror("read()");
 
 	old.c_lflag |= ICANON;
 	old.c_lflag |= ECHO;
 
 	if (tcsetattr(0, TCSADRAIN, &old) < 0)
-	perror("tcsetattr ~ICANON");
+		perror("tcsetattr ~ICANON");
 
 	return (buf);
 }
@@ -87,4 +67,42 @@ bool isValid(char c) {
 		return true;
 
 	return false;
+}
+
+string toLower(string str) {
+	string res = "";
+
+	for (unsigned int i = 0; i < str.size(); i++)
+		res += tolower(str[i]);
+
+	return res;
+}
+
+string toUpper(string str) {
+	string res = "";
+
+	for (unsigned int i = 0; i < str.size(); i++)
+		res += toupper(str[i]);
+
+	return res;
+}
+
+bool fieldIsNull(std::string field) {
+	return field.compare("null") == 0;
+}
+
+vector<string> getTokens(string str, string separator) {
+	vector<string> vec;
+
+	char temp[1024];
+	strcpy(temp, str.c_str());
+
+	char *p = strtok(temp, separator.c_str());
+	while (p) {
+		vec.push_back(string(p));
+
+		p = strtok(NULL, separator.c_str());
+	}
+
+	return vec;
 }

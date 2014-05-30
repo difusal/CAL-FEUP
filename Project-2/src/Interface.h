@@ -3,6 +3,9 @@
 #include <set>
 #include "Contact.h"
 
+const std::string contactsListPath = "contacts.txt";
+const std::string settingsPath = "settings.txt";
+
 enum Action {
 	LIST_ALL, SEARCH, ADD, REMOVE, EXIT
 };
@@ -21,6 +24,7 @@ class Interface {
 private:
 	bool done;
 	std::set<Contact*, ContactsComp> contacts;
+	unsigned int maxResToDisplay;
 
 public:
 	Interface();
@@ -33,6 +37,12 @@ public:
 
 	void loadContacts();
 	void saveContacts();
+
+	int loadSettings();
+	void saveSettings();
+
+	std::set<Contact*, ContactsComp> getSearchResults(std::string search);
+	void displaySearchResults(std::set<Contact*, ContactsComp> searchResults);
 
 	void showMainMenu();
 	void showContactsList();
