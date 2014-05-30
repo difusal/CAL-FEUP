@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <tr1/regex>
 
 using namespace std;
 
@@ -171,8 +172,14 @@ void Interface::displaySearchResults(set<Contact*, ContactsComp> results) {
 	cout << endl;
 
 	set<Contact*, ContactsComp>::iterator it = results.begin();
-	for (int i = 0; i < nResToDisplay; i++, it++)
+	for (int i = 0; i < nResToDisplay; i++, it++) {
+		if (i == 0)
+			cout << "> ";
+		else
+			cout << "  ";
+
 		cout << (*it)->getName() << endl;
+	}
 }
 
 void Interface::showMainMenu() {
@@ -185,7 +192,8 @@ void Interface::showMainMenu() {
 	cout << "2. Search" << endl;
 	cout << "3. Add Contact" << endl;
 	cout << "4. Remove Contact" << endl;
-	cout << "5. Exit" << endl;
+	cout << "5. Settings" << endl;
+	cout << "6. Exit" << endl;
 	cout << endl;
 	cout << "Choose an option:" << endl;
 	cout << "> ";
@@ -194,7 +202,7 @@ void Interface::showMainMenu() {
 	cin >> input;
 	input--;
 
-	switch ((Action) input) {
+	switch ((MainMenuAction) input) {
 	case LIST_ALL:
 		showContactsList();
 		break;
@@ -209,6 +217,10 @@ void Interface::showMainMenu() {
 	case REMOVE:
 		clearStdIn();
 		removeContact();
+		break;
+	case SETTINGS:
+		clearStdIn();
+		editSettings();
 		break;
 	case EXIT:
 		done = true;
@@ -226,6 +238,59 @@ void Interface::showContactsList() {
 		cout << **it << endl;
 
 	clearStdInAndPressEnterToContinue();
+}
+
+Contact* Interface::searchContact() {
+	string search = "";
+	set<Contact*, ContactsComp> searchResults;
+
+	bool typing = true;
+	do {
+		cout << endl;
+		cout << "---------------------------------------------" << endl;
+		cout << "Search: " << search << "|" << endl;
+
+		searchResults = getSearchResults(search);
+		displaySearchResults(searchResults);
+
+		cout << endl;
+		cout << "Usage:" << endl;
+		cout << "    Press <Enter> to select the first contact" << endl;
+		cout << "    Press <Esc> to go back" << endl;
+		cout << "---------------------------------------------" << endl;
+
+		// read character
+		char c;
+		do {
+			c = getChar();
+		} while (!isValid(c));
+
+		// if <backspace> was pressed
+		if (c == BACKSPACE_CODE)
+			// delete last string character
+			search = search.substr(0, search.size() - 1);
+		// if <enter> was pressed
+		else if (c == ENTER_CODE)
+			// done typing
+			typing = false;
+		else
+			search += c;
+	} while (typing);
+
+	Contact* selectedContact = NULL;
+	if (searchResults.size() != 0) {
+		cout << endl;
+		cout << "Selected contact:" << endl;
+		cout << **searchResults.begin();
+
+		selectedContact = (*searchResults.begin());
+	} else {
+		cout << endl;
+		cout << "Warning: No contact selected." << endl;
+		pressEnterToContinue();
+	}
+
+	return selectedContact;
 }
 
 void Interface::addContact() {
@@ -281,12 +346,26 @@ void Interface::addContact() {
 		if (email.size() == 0) {
 			valid = true;
 			email = NULL_FIELD;
-		} else if (email.find(" ") != string::npos
-				|| email.find("@") == string::npos || email.size() < 5) {
+		} else if (email.size() < 5 || email.find(" ") != string::npos
+				|| email.find("@") == string::npos
+				|| email.find(".") == string::npos) {
 			cout << "Error: invalid email." << endl;
 			cout << endl;
 		} else
 			valid = true;
+
+		/*
+		 // when regex_match gets implemented,
+		 // uncomment this to enable a decent email validation.
+
+		 const tr1::regex pattern("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}");
+
+		 if (email.size() == 0) {
+		 valid = true;
+		 email = NULL_FIELD;
+		 } else if (std::tr1::regex_match(email, pattern))
+		 valid = true;
+		 */
 	} while (!valid);
 
 	// -------------------------------------------
@@ -309,66 +388,57 @@ void Interface::addContact() {
 	pressEnterToContinue();
 }
 
-Contact* Interface::searchContact() {
-	string search = "";
-	set<Contact*, ContactsComp> searchResults;
-
-	bool typing = true;
-	do {
-		cout << endl;
-		cout << "-----------------------------------------" << endl;
-		cout << "Search: " << search << "|" << endl;
-		searchResults = getSearchResults(search);
-		displaySearchResults(searchResults);
-		cout << "-----------------------------------------" << endl;
-
-		// read character
-		char c;
-		do {
-			c = getChar();
-		} while (!isValid(c));
-
-		// if <backspace> was pressed
-		if (c == BACKSPACE_CODE)
-			// delete last string character
-			search = search.substr(0, search.size() - 1);
-		// if <enter> was pressed
-		else if (c == ENTER_CODE)
-			// done typing
-			typing = false;
-		else
-			search += c;
-	} while (typing);
-
-	cout << endl;
-	cout << "Selected contact:" << endl;
-	cout << **searchResults.begin() << endl;
-
-	return (*searchResults.begin());
-}
-
 void Interface::removeContact() {
 	Contact* contact = searchContact();
 
+	if (contact) {
+		bool done = false;
+		do {
+			char input;
+
+			cout << "Remove " << contact->getName() << "? [Y/n] ";
+			cin >> input;
+
+			input = tolower(input);
+			if (input == 'y') {
+				contacts.erase(contact);
+				cout << "Contact successfully removed." << endl;
+				saveContacts();
+				done = true;
+			} else if (input == 'n') {
+				cout << "Operation canceled." << endl;
+				done = true;
+			}
+		} while (!done);
+
+		cout << endl;
+		clearStdInAndPressEnterToContinue();
+	}
+}
+
+void Interface::editSettings() {
+	cout << endl;
+	cout << "--------" << endl;
+	cout << "Settings" << endl;
+	cout << "--------" << endl;
+	cout << "Current number of results to display: " << maxResToDisplay << endl;
+
 	bool done = false;
 	do {
-		char input;
-
-		cout << "Remove " << contact->getName() << "? [Y/n] ";
+		int input;
+		cout << endl;
+		cout << "Insert new value: ";
 		cin >> input;
 
-		input = tolower(input);
-		if (input == 'y') {
-			contacts.erase(contact);
-			cout << "Contact successfully removed." << endl;
-			saveContacts();
-			done = true;
-		} else if (input == 'n') {
-			cout << "Operation canceled." << endl;
+		if (input <= 0 || 20 < input) {
+			cout << "Error: Input must be a value between 1-20." << endl;
+			clearStdInAndPressEnterToContinue();
+		} else {
+			maxResToDisplay = input;
+			saveSettings();
 			done = true;
 		}
 	} while (!done);
 
-	cout << endl;
 	clearStdInAndPressEnterToContinue();
 }

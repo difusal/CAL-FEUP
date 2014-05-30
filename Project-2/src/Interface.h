@@ -6,18 +6,8 @@
 const std::string contactsListPath = "contacts.txt";
 const std::string settingsPath = "settings.txt";
 
-enum Action {
-	LIST_ALL, SEARCH, ADD, REMOVE, EXIT
-};
-
-struct ContactsComp {
-	bool operator()(const Contact* lhs, const Contact* rhs) const {
-		if (lhs->getFirstName().compare(rhs->getFirstName()) == 0)
-			return (fieldIsNull(lhs->getLastName()) ? "" : lhs->getLastName())
-					< (fieldIsNull(rhs->getLastName()) ? "" : rhs->getLastName());
-		else
-			return lhs->getFirstName() < rhs->getFirstName();
-	}
+enum MainMenuAction {
+	LIST_ALL, SEARCH, ADD, REMOVE, SETTINGS, EXIT
 };
 
 class Interface {
@@ -46,7 +36,8 @@ public:
 
 	void showMainMenu();
 	void showContactsList();
-	void addContact();
 	Contact* searchContact();
+	void addContact();
 	void removeContact();
+	void editSettings();
 };
