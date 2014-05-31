@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <cstring>
 
+// System dependent includes necessary to implement getChar() function.
 #ifdef __linux__
 // linux system
 #include <unistd.h>
@@ -14,6 +15,8 @@
 
 using namespace std;
 
+// System independent function to read a char from the console
+// without the need of the <Enter> key to be pressed.
 #ifdef __linux__
 // linux system
 char getChar() {
@@ -49,6 +52,7 @@ char getChar() {
 }
 #endif
 
+// Returns true if the received char is valid.
 bool isValid(char c) {
 	// backspace, enter or esc
 	if (c == BACKSPACE_CODE || c == ENTER_CODE || c == ESC_CODE)
@@ -61,6 +65,7 @@ bool isValid(char c) {
 	return false;
 }
 
+// Returns a lower case version of the received string.
 string toLower(string str) {
 	string res = "";
 
@@ -70,6 +75,7 @@ string toLower(string str) {
 	return res;
 }
 
+// Returns an upper case version of the received string.
 string toUpper(string str) {
 	string res = "";
 
@@ -79,6 +85,12 @@ string toUpper(string str) {
 	return res;
 }
 
+// Returns true if the specified field is null.
+bool fieldIsNull(string field) {
+	return field.compare(NULL_FIELD_LABEL) == 0;
+}
+
+// Returns a vector of strings containing the tokens of str separated by separator
 vector<string> getTokens(string str, string separator) {
 	vector<string> vec;
 

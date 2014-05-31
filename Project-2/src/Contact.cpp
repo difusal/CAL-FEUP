@@ -4,10 +4,6 @@
 
 using namespace std;
 
-bool fieldIsNull(string field) {
-	return field.compare(NULL_FIELD) == 0;
-}
-
 Contact::Contact(string firstName, string lastName, string phoneNumber,
 		string email, string address) {
 	this->firstName = firstName;
@@ -39,8 +35,7 @@ void Contact::setEmail(const std::string& email) {
 }
 
 const std::string Contact::getName() const {
-	return (lastName.compare(NULL_FIELD) == 0) ?
-			firstName : firstName + " " + lastName;
+	return fieldIsNull(lastName) ? firstName : firstName + " " + lastName;
 }
 
 const std::string& Contact::getFirstName() const {
