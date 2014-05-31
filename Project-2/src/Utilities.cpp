@@ -54,8 +54,8 @@ bool isValid(char c) {
 	if (c == BACKSPACE_CODE || c == ENTER_CODE || c == ESC_CODE)
 		return true;
 
-	// a-z or 0-9 or space
-	if (('a' <= c && c <= 'z') || ('0' <= c && c <= '9') || c == ' ')
+	// a-z or 0-9 and others...
+	if (32 <= c && c <= 126)
 		return true;
 
 	return false;

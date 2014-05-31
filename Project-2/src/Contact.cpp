@@ -72,10 +72,53 @@ void Contact::setDistanceToSearch(int distanceToSearch) {
 }
 
 void Contact::updateDistanceToSearch(std::string search) {
+	// name comparison
 	distanceToSearch = min(
-			min(getEditDistanceOT(search, toLower(getFirstName())),
-					getEditDistanceOT(search, toLower(getLastName()))),
-			getEditDistanceOT(search, toLower(getName())));
+			getEditDistanceOT(search,
+					getFirstName().substr(0, search.length())),
+			getEditDistanceOT(search,
+					toLower(getFirstName().substr(0, search.length()))));
+	if (!fieldIsNull(getLastName())) {
+		int temp1 = min(
+				getEditDistanceOT(search,
+						getLastName().substr(0, search.length())),
+				getEditDistanceOT(search,
+						toLower(getLastName().substr(0, search.length()))));
+
+		int temp2 = min(
+				getEditDistanceOT(search, getName().substr(0, search.length())),
+				getEditDistanceOT(search,
+						toLower(getName().substr(0, search.length()))));
+
+		distanceToSearch = min(distanceToSearch, min(temp1, temp2));
+	}
+
+	// phone comparison
+	if (!fieldIsNull(getPhoneNumber()))
+		distanceToSearch = min(distanceToSearch,
+				getEditDistanceOT(search,
+						getPhoneNumber().substr(0, search.length())));
+
+	// email comparison
+	if (!fieldIsNull(getEmail()))
+		distanceToSearch = min(distanceToSearch,
+				getEditDistanceOT(search,
+						getEmail().substr(0, search.length())));
+
+	// address comparison
+	if (!fieldIsNull(getAddress())) {
+		vector<string> adrsTks = getTokens(getAddress(), " ");
+
+		for (unsigned int i = 0; i < adrsTks.size(); i++) {
+			int temp = min(
+					getEditDistanceOT(search,
+							adrsTks[i].substr(0, search.length())),
+					getEditDistanceOT(search,
+							toLower(adrsTks[i]).substr(0, search.length())));
+
+			distanceToSearch = min(distanceToSearch, temp);
+		}
+	}
 }
 
 void Contact::setPhoneNumber(const std::string& phoneNumber) {
