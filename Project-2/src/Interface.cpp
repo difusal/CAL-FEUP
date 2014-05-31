@@ -3,7 +3,6 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include <tr1/regex>
 
 using namespace std;
 
