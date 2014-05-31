@@ -243,6 +243,7 @@ Contact* Interface::searchContact() {
 	string search = "";
 	set<Contact*, ContactsComp> searchResults;
 
+	bool escWasPressed = false;
 	bool typing = true;
 	do {
 		cout << endl;
@@ -259,34 +260,41 @@ Contact* Interface::searchContact() {
 		cout << "---------------------------------------------" << endl;
 
 		// read character
-		char c;
+		unsigned char c;
 		do {
 			c = getChar();
+			// cout << "CHAR CODE: " << (int) c << endl;
 		} while (!isValid(c));
 
-		// if <backspace> was pressed
 		if (c == BACKSPACE_CODE)
 			// delete last string character
 			search = search.substr(0, search.size() - 1);
-		// if <enter> was pressed
 		else if (c == ENTER_CODE)
 			// done typing
 			typing = false;
-		else
+		else if (c == ESC_CODE) {
+			typing = false;
+			escWasPressed = true;
+		} else
 			search += c;
 	} while (typing);
 
 	Contact* selectedContact = NULL;
-	if (searchResults.size() != 0) {
-		cout << endl;
-		cout << "Selected contact:" << endl;
-		cout << **searchResults.begin();
 
-		selectedContact = (*searchResults.begin());
-	} else {
-		cout << endl;
-		cout << "Warning: No contact selected." << endl;
-		pressEnterToContinue();
+	if (escWasPressed)
+		cout << "<Esc> has been pressed." << endl;
+	else {
+		if (searchResults.size() != 0) {
+			cout << endl;
+			cout << "Selected contact:" << endl;
+			cout << **searchResults.begin();
+
+			selectedContact = (*searchResults.begin());
+		} else {
+			cout << endl;
+			cout << "Warning: No contact selected." << endl;
+			pressEnterToContinue();
+		}
 	}
 
 	return selectedContact;
@@ -315,6 +323,14 @@ void Interface::addContact() {
 
 		if (names.size() >= 2)
 			lastName = names[names.size() - 1];
+
+		foreach(contacts, it)
+			if ((*it)->getName().compare(firstName + " " + lastName) == 0) {
+				valid = false;
+
+				cout << "Error: A contact with this name already exists."
+						<< endl;
+			}
 	} while (!valid);
 
 	// -------------------------------------------

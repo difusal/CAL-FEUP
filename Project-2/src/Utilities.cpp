@@ -50,20 +50,12 @@ char getChar() {
 #endif
 
 bool isValid(char c) {
-	// space
-	if (c == ' ')
+	// backspace, enter or esc
+	if (c == BACKSPACE_CODE || c == ENTER_CODE || c == ESC_CODE)
 		return true;
 
-	// backspace
-	if (c == BACKSPACE_CODE)
-		return true;
-
-	// enter
-	if (c == ENTER_CODE)
-		return true;
-
-	// a-z or 0-9
-	if (('a' <= c && c <= 'z') || ('0' <= c && c <= '9'))
+	// a-z or 0-9 or space
+	if (('a' <= c && c <= 'z') || ('0' <= c && c <= '9') || c == ' ')
 		return true;
 
 	return false;
