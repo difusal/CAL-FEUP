@@ -22,6 +22,11 @@ bool Interface::isDone() {
 	return done;
 }
 
+void Interface::clearScreen() {
+	for (int i = 0; i < 60; i++)
+		cout << endl;
+}
+
 void Interface::clearStdIn() {
 	// clearing buffer
 	cin.clear();
@@ -36,11 +41,6 @@ void Interface::pressEnterToContinue() {
 void Interface::clearStdInAndPressEnterToContinue() {
 	clearStdIn();
 	pressEnterToContinue();
-}
-
-void Interface::clearScreen() {
-	for (int i = 0; i < 60; i++)
-		cout << endl;
 }
 
 void Interface::loadContacts() {
@@ -328,7 +328,7 @@ void Interface::addContact() {
 		if (names.size() >= 1) {
 			valid = true;
 			firstName = names[0];
-			lastName = NULL_FIELD;
+			lastName = NULL_FIELD_LABEL;
 		}
 
 		if (names.size() >= 2)
@@ -356,7 +356,7 @@ void Interface::addContact() {
 			valid = true;
 		else if (phoneNumber.size() == 0) {
 			valid = true;
-			phoneNumber = NULL_FIELD;
+			phoneNumber = NULL_FIELD_LABEL;
 		} else {
 			cout << "Error: phone number must have exactly 9 digits." << endl;
 			cout << endl;
@@ -372,7 +372,7 @@ void Interface::addContact() {
 
 		if (email.size() == 0) {
 			valid = true;
-			email = NULL_FIELD;
+			email = NULL_FIELD_LABEL;
 		} else if (email.size() < 5 || email.find(" ") != string::npos
 				|| email.find("@") == string::npos
 				|| email.find(".") == string::npos) {
@@ -400,7 +400,7 @@ void Interface::addContact() {
 	cout << "Address: ";
 	getline(cin, address);
 	if (address.size() == 0)
-		address = NULL_FIELD;
+		address = NULL_FIELD_LABEL;
 
 	// -------------------------------------------
 	// add new contact to contacts

@@ -21,10 +21,10 @@ public:
 	virtual ~Interface();
 
 	bool isDone();
+	void clearScreen();
 	void clearStdIn();
 	void pressEnterToContinue();
 	void clearStdInAndPressEnterToContinue();
-	void clearScreen();
 
 	void loadContacts();
 	void saveContacts();

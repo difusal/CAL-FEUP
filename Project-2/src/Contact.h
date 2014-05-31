@@ -4,9 +4,6 @@
 #include <string>
 #include "Utilities.h"
 
-const std::string NULL_FIELD = "null";
-bool fieldIsNull(std::string field);
-
 class Contact {
 private:
 	std::string firstName, lastName, phoneNumber, email, address;
@@ -35,7 +32,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& out, const Contact& contact) {
 		int fieldsLabelWidth = 9;
 
-		// name
+		// output name
 		if (!fieldIsNull(contact.firstName) || !fieldIsNull(contact.lastName)) {
 			out.width(fieldsLabelWidth);
 			out << "Name: ";
@@ -49,7 +46,7 @@ public:
 			out << std::endl;
 		}
 
-		// phone number
+		// output phone number
 		if (!fieldIsNull(contact.phoneNumber)) {
 			out.width(fieldsLabelWidth);
 			out << "Phone: ";
@@ -62,13 +59,13 @@ public:
 			out << std::endl;
 		}
 
-		// email
+		// output email
 		if (!fieldIsNull(contact.email)) {
 			out.width(fieldsLabelWidth);
 			out << "Email: " << contact.email << std::endl;
 		}
 
-		// address
+		// output address
 		if (!fieldIsNull(contact.address)) {
 			out.width(fieldsLabelWidth);
 			out << "Address: " << contact.address << std::endl;
@@ -88,10 +85,13 @@ struct ContactsComp {
 		std::string rhsFirstName = toLower(rhs->getFirstName());
 		std::string rhsLastName = toLower(rhs->getLastName());
 
+		// if the first names are the same
 		if (lhsFirstName.compare(rhsFirstName) == 0)
+			// compare last names
 			return (fieldIsNull(lhsLastName) ? "" : lhsLastName)
 					< (fieldIsNull(rhsLastName) ? "" : rhsLastName);
 		else
+			// compare first names
 			return lhsFirstName < rhsFirstName;
 	}
 };
