@@ -24,6 +24,7 @@ public:
 	void clearStdIn();
 	void pressEnterToContinue();
 	void clearStdInAndPressEnterToContinue();
+	void clearScreen();
 
 	void loadContacts();
 	void saveContacts();

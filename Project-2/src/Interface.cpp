@@ -38,6 +38,11 @@ void Interface::clearStdInAndPressEnterToContinue() {
 	pressEnterToContinue();
 }
 
+void Interface::clearScreen() {
+	for (int i = 0; i < 40; i++)
+		cout << endl;
+}
+
 void Interface::loadContacts() {
 	// clearing vector current content
 	contacts.clear();
@@ -155,10 +160,7 @@ vector<Contact*> Interface::getSearchResults(string search) {
 			results.push_back(*it);
 	else {
 		foreach(contacts, it)
-		{
-			(*it)->updateDistanceToSearch(search);
-			results.push_back(*it);
-		}
+			(*it)->updateDistanceToSearch(search), results.push_back(*it);
 
 		sort(ALL(results), shortestDistanceContact);
 	}
@@ -173,23 +175,19 @@ void Interface::displaySearchResults(vector<Contact*> results) {
 
 	cout << "Showing " << nResToDisplay << " of " << results.size()
 			<< " results." << endl;
-	cout << endl;
+	cout << "- - - - - - - - - - - - - - - - - - - - - - -";
 
 	for (int i = 0; i < nResToDisplay; i++) {
-		if (i == 0)
-			cout << "> ";
-		else
-			cout << "  ";
+		if (i == 1)
+			cout << "- - - - - - - - - - - - - - - - - - - - - - -";
 
-		//TODO swap these
-		//cout << results[i]->getName() << endl;
-		cout << results[i]->getName() << "\tdist:"
-				<< results[i]->getDistanceToSearch() << endl;
+		cout << endl;
+		cout << *results[i];
 	}
 }
 
 void Interface::showMainMenu() {
-	cout << endl;
+	clearScreen();
 	cout << "-------------------" << endl;
 	cout << "Contacts management" << endl;
 	cout << "-------------------" << endl;
@@ -239,7 +237,7 @@ void Interface::showMainMenu() {
 	}
 }
 void Interface::showContactsList() {
-	cout << endl;
+	clearScreen();
 	foreach(contacts, it)
 		cout << **it << endl;
 
@@ -253,14 +251,14 @@ Contact* Interface::searchContact() {
 	bool escWasPressed = false;
 	bool typing = true;
 	do {
-		cout << endl;
+		clearScreen();
 		cout << "---------------------------------------------" << endl;
 		cout << "Search: " << search << "|" << endl;
 
 		searchResults = getSearchResults(search);
 		displaySearchResults(searchResults);
 
-		cout << endl;
+		cout << "- - - - - - - - - - - - - - - - - - - - - - -" << endl;
 		cout << "Usage:" << endl;
 		cout << "    Press <Enter> to select the first contact" << endl;
 		cout << "    Press <Esc> to go back" << endl;
@@ -311,6 +309,11 @@ void Interface::addContact() {
 	bool valid;
 	string name, firstName, lastName, phoneNumber, email, address;
 
+	clearScreen();
+	cout << "-----------" << endl;
+	cout << "Add contact" << endl;
+	cout << "-----------" << endl;
+
 	// -------------------------------------------
 	// name
 	valid = false;
@@ -332,11 +335,13 @@ void Interface::addContact() {
 			lastName = names[names.size() - 1];
 
 		foreach(contacts, it)
-			if ((*it)->getName().compare(firstName + " " + lastName) == 0) {
-				valid = false;
-
+			if ((*it)->getName().compare(firstName + " " + lastName) == 0
+					|| ((*it)->getFirstName().compare(firstName) == 0
+							&& fieldIsNull((*it)->getLastName()))) {
 				cout << "Error: A contact with this name already exists."
 						<< endl;
+
+				valid = false;
 			}
 	} while (!valid);
 
@@ -418,6 +423,7 @@ void Interface::removeContact() {
 		do {
 			char input;
 
+			cout << endl;
 			cout << "Remove " << contact->getName() << "? [Y/n] ";
 			cin >> input;
 
@@ -439,7 +445,7 @@ void Interface::removeContact() {
 }
 
 void Interface::editSettings() {
-	cout << endl;
+	clearScreen();
 	cout << "--------" << endl;
 	cout << "Settings" << endl;
 	cout << "--------" << endl;
