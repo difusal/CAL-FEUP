@@ -1,6 +1,8 @@
 Subject 7: Contacts Management
 ==============================
 
+###Project summary:
+
 Gmail and other email services, or even some smartphones applications extensively use contacts management. Such applications need efficient algorithms to implement features such as **contact search**, **contact insertion** and **contact deletion**.
 
 This project aims to implement some of these features on a list of registers that might contain info like **name**, **phone number**, **email** and **address**.
@@ -13,11 +15,14 @@ The file that contains all the registers is **contacts.txt**.
 
 ###Questions:
 
+**Q**: What algorithm will be used to search the contacts list?  
+**A**: An approximate string search algorithm will be used.
+
 **Q**: What container should be used to store the contacts during runtime?  
 **A**: One of the most appropriate choices would be to use a [set](http://www.cplusplus.com/reference/set/set/). Sets not only store unique elements following a specific order, but are also implemented as *binary search trees*, which will be perfect for the **search**, **insertion** and **deletion** operations we need to implement.
 
-**Q**: What algorithm will be used to search the contacts list?  
-**A**: An approximate string search algorithm will be used.
+**Q**: How long will a contact insertion/deletion/search operation take?  
+**A**: Since the contacts container is a *set*, which (again) are implemented as *binary search trees*, these operations will have a **time complexity** of **O(log n)**.
 
 ###Problems to solve:
 
