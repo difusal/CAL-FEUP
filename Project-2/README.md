@@ -21,8 +21,8 @@ The file that contains all the registers is **contacts.txt**.
 
 ###Problems to solve:
 
-[x] File syntax to store contacts persistent data;
-[x] Search algorithms.
+- [x] File syntax to store contacts persistent data;  
+- [x] Search algorithms.
 
 ###File syntax:
 
