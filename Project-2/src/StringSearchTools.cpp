@@ -5,6 +5,7 @@
 
 using namespace std;
 
+// Returns the distance between two strings. Space complexity: O(|P|.|T|).
 int getEditDistanceOPT(string needle, string haystack) {
 	// initialization
 	vector<vector<int> > D(haystack.length() + 1,
@@ -30,6 +31,7 @@ int getEditDistanceOPT(string needle, string haystack) {
 	return D[haystack.length()][needle.length()];
 }
 
+// Returns the distance between two strings. Space complexity: O(|T|).
 int getEditDistanceOT(string needle, string haystack) {
 	// initialization
 	vector<int> D;
