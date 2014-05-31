@@ -31,8 +31,8 @@ public:
 	int loadSettings();
 	void saveSettings();
 
-	std::set<Contact*, ContactsComp> getSearchResults(std::string search);
-	void displaySearchResults(std::set<Contact*, ContactsComp> searchResults);
+	std::vector<Contact*> getSearchResults(std::string search);
+	void displaySearchResults(std::vector<Contact*> searchResults);
 
 	void showMainMenu();
 	void showContactsList();

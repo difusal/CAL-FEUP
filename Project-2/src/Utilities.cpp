@@ -79,10 +79,6 @@ string toUpper(string str) {
 	return res;
 }
 
-bool fieldIsNull(std::string field) {
-	return field.compare(NULL_FIELD) == 0;
-}
-
 vector<string> getTokens(string str, string separator) {
 	vector<string> vec;
 

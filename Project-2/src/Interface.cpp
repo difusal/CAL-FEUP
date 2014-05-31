@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <algorithm>
 
 using namespace std;
 
@@ -145,23 +146,27 @@ void Interface::saveSettings() {
 	fout << maxResToDisplay << endl;
 }
 
-set<Contact*, ContactsComp> Interface::getSearchResults(string search) {
-	set<Contact*, ContactsComp> results;
+vector<Contact*> Interface::getSearchResults(string search) {
+	vector<Contact*> results;
 
 	// if search is equal to "" (empty string)
 	if (search.size() == 0)
-		results = contacts;
-	else {
-		// search all contacts
 		foreach(contacts, it)
-			if (toLower((*it)->getName()).find(search) != string::npos)
-				results.insert(*it);
+			results.push_back(*it);
+	else {
+		foreach(contacts, it)
+		{
+			(*it)->updateDistanceToSearch(search);
+			results.push_back(*it);
+		}
+
+		sort(ALL(results), shortestDistanceContact);
 	}
 
 	return results;
 }
 
-void Interface::displaySearchResults(set<Contact*, ContactsComp> results) {
+void Interface::displaySearchResults(vector<Contact*> results) {
 	int nResToDisplay =
 			(results.size() < maxResToDisplay) ?
 					results.size() : maxResToDisplay;
@@ -170,14 +175,16 @@ void Interface::displaySearchResults(set<Contact*, ContactsComp> results) {
 			<< " results." << endl;
 	cout << endl;
 
-	set<Contact*, ContactsComp>::iterator it = results.begin();
-	for (int i = 0; i < nResToDisplay; i++, it++) {
+	for (int i = 0; i < nResToDisplay; i++) {
 		if (i == 0)
 			cout << "> ";
 		else
 			cout << "  ";
 
-		cout << (*it)->getName() << endl;
+		//TODO swap these
+		//cout << results[i]->getName() << endl;
+		cout << results[i]->getName() << "\tdist:"
+				<< results[i]->getDistanceToSearch() << endl;
 	}
 }
 
@@ -241,7 +248,7 @@ void Interface::showContactsList() {
 
 Contact* Interface::searchContact() {
 	string search = "";
-	set<Contact*, ContactsComp> searchResults;
+	vector<Contact*> searchResults;
 
 	bool escWasPressed = false;
 	bool typing = true;
@@ -260,7 +267,7 @@ Contact* Interface::searchContact() {
 		cout << "---------------------------------------------" << endl;
 
 		// read character
-		unsigned char c;
+		char c;
 		do {
 			c = getChar();
 			// cout << "CHAR CODE: " << (int) c << endl;
