@@ -3,9 +3,8 @@
 #include <string>
 #include <vector>
 
+#define ALL(v) (v).begin(), (v).end()
 #define foreach(v, it) for(typeof((v).begin()) it = (v).begin(); it != (v).end(); it++)
-
-const std::string NULL_FIELD = "null";
 
 #ifdef __linux__
 // linux system
@@ -25,5 +24,4 @@ bool isValid(char c);
 std::string toLower(std::string str);
 std::string toUpper(std::string str);
 
-bool fieldIsNull(std::string field);
 std::vector<std::string> getTokens(std::string str, std::string separator);

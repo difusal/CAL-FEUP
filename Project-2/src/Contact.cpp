@@ -1,6 +1,12 @@
 #include "Contact.h"
 
+#include "StringSearchTools.h"
+
 using namespace std;
+
+bool fieldIsNull(string field) {
+	return field.compare(NULL_FIELD) == 0;
+}
 
 Contact::Contact(string firstName, string lastName, string phoneNumber,
 		string email, string address) {
@@ -9,6 +15,8 @@ Contact::Contact(string firstName, string lastName, string phoneNumber,
 	this->phoneNumber = phoneNumber;
 	this->email = email;
 	this->address = address;
+
+	distanceToSearch = 0;
 }
 
 Contact::~Contact() {
@@ -55,6 +63,25 @@ const std::string& Contact::getPhoneNumber() const {
 	return phoneNumber;
 }
 
+int Contact::getDistanceToSearch() const {
+	return distanceToSearch;
+}
+
+void Contact::setDistanceToSearch(int distanceToSearch) {
+	this->distanceToSearch = distanceToSearch;
+}
+
+void Contact::updateDistanceToSearch(std::string search) {
+	distanceToSearch = min(
+			min(getEditDistanceOT(search, toLower(getFirstName())),
+					getEditDistanceOT(search, toLower(getLastName()))),
+			getEditDistanceOT(search, toLower(getName())));
+}
+
 void Contact::setPhoneNumber(const std::string& phoneNumber) {
 	this->phoneNumber = phoneNumber;
+}
+
+bool shortestDistanceContact(const Contact* c1, const Contact* c2) {
+	return c1->getDistanceToSearch() < c2->getDistanceToSearch();
 }

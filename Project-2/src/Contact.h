@@ -4,9 +4,13 @@
 #include <string>
 #include "Utilities.h"
 
+const std::string NULL_FIELD = "null";
+bool fieldIsNull(std::string field);
+
 class Contact {
 private:
 	std::string firstName, lastName, phoneNumber, email, address;
+	int distanceToSearch;
 
 public:
 	Contact(std::string firstName, std::string lastName,
@@ -24,6 +28,9 @@ public:
 	void setLastName(const std::string& lastName);
 	const std::string& getPhoneNumber() const;
 	void setPhoneNumber(const std::string& phoneNumber);
+	int getDistanceToSearch() const;
+	void setDistanceToSearch(int distanceToSearch);
+	void updateDistanceToSearch(std::string search);
 
 	friend std::ostream& operator<<(std::ostream& out, const Contact& contact) {
 		int fieldsLabelWidth = 9;
@@ -70,6 +77,8 @@ public:
 		return out;
 	}
 };
+
+bool shortestDistanceContact(const Contact* c1, const Contact* c2);
 
 struct ContactsComp {
 	bool operator()(const Contact* lhs, const Contact* rhs) const {
