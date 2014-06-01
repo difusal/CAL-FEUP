@@ -24,14 +24,6 @@ const char ESC_CODE = 27;
 #endif
 
 /**
- * System independent function to read a char from the console
- * without the need of the <Enter> key to be pressed.
- *
- * @return The inputed char.
- */
-char getChar();
-
-/**
  * Returns true if the received char is valid.
  *
  * @param c The char to be analyzed.
@@ -73,3 +65,11 @@ bool fieldIsNull(std::string field);
  * @return A vector of strings which contains the tokens.
  */
 std::vector<std::string> getTokens(std::string str, std::string separator);
+
+void clearScreen();
+
+void clearStdIn();
+
+void pressEnterToContinue();
+
+void clearStdInAndPressEnterToContinue();

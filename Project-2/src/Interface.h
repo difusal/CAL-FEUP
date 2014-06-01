@@ -17,11 +17,6 @@ public:
 
 	bool isDone();
 
-	void clearScreen();
-	void clearStdIn();
-	void pressEnterToContinue();
-	void clearStdInAndPressEnterToContinue();
-
 	void showMainMenu();
 	void showContactsList();
 	Contact* searchContact();

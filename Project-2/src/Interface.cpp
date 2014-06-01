@@ -1,6 +1,7 @@
 #include "Interface.h"
 
 #include <iostream>
+#include "ConsoleUtilities.h"
 
 using namespace std;
 
@@ -15,27 +16,6 @@ Interface::~Interface() {
 
 bool Interface::isDone() {
 	return done;
-}
-
-void Interface::clearScreen() {
-	for (int i = 0; i < 60; i++)
-		cout << endl;
-}
-
-void Interface::clearStdIn() {
-	// clear buffer
-	cin.clear();
-	cin.ignore(10000, '\n');
-}
-
-void Interface::pressEnterToContinue() {
-	cout << "Press <Enter> to continue...";
-	cin.get();
-}
-
-void Interface::clearStdInAndPressEnterToContinue() {
-	clearStdIn();
-	pressEnterToContinue();
 }
 
 void Interface::showMainMenu() {
@@ -64,7 +44,13 @@ void Interface::showMainMenu() {
 		break;
 	case SEARCH:
 		clearStdIn();
-		searchContact();
+		if (contactsAPI->getContacts().empty()) {
+			cout << endl;
+			cout << "Impossible to search contacts with an empty contacts list."
+					<< endl;
+			pressEnterToContinue();
+		} else
+			searchContact();
 		break;
 	case ADD:
 		clearStdIn();
@@ -72,7 +58,14 @@ void Interface::showMainMenu() {
 		break;
 	case REMOVE:
 		clearStdIn();
-		removeContact();
+		if (contactsAPI->getContacts().empty()) {
+			cout << endl;
+			cout
+					<< "Impossible to remove a contact from an empty contacts list."
+					<< endl;
+			pressEnterToContinue();
+		} else
+			removeContact();
 		break;
 	case SETTINGS:
 		clearStdIn();

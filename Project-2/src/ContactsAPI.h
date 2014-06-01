@@ -41,7 +41,7 @@ public:
 	void setMaxResToDisplay(unsigned int maxResToDisplay);
 	const SearchResults& getSearchResults() const;
 
-	void loadContacts();
+	int loadContacts();
 	void saveContacts();
 
 	int loadSettings();

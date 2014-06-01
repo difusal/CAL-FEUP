@@ -35,7 +35,7 @@ const SearchResults& ContactsAPI::getSearchResults() const {
 	return searchResults;
 }
 
-void ContactsAPI::loadContacts() {
+int ContactsAPI::loadContacts() {
 	// clear vector current content
 	contacts.clear();
 
@@ -43,8 +43,12 @@ void ContactsAPI::loadContacts() {
 	ifstream fin;
 	fin.open(contactsListPath.c_str());
 	if (!fin) {
+		cerr << endl;
 		cerr << "Error: Unable to open file: " << contactsListPath << endl;
-		exit(1);
+		cerr << "Warning: Contacts list may be empty." << endl;
+		pressEnterToContinue();
+
+		return -1;
 	}
 
 	// read number of contacts to be read from file
@@ -66,6 +70,8 @@ void ContactsAPI::loadContacts() {
 
 		addContact(firstName, lastName, phoneNumber, email, address);
 	}
+
+	return 0;
 }
 
 void ContactsAPI::saveContacts() {
@@ -107,10 +113,13 @@ int ContactsAPI::loadSettings() {
 	ifstream fin;
 	fin.open(settingsPath.c_str());
 	if (!fin) {
+		maxResToDisplay = DEFAULT_MAX_RES_TO_DISPLAY;
+
+		cerr << endl;
 		cerr << "Error: Unable to open file: " << settingsPath << endl;
 		cerr << "Warning: Using default settings values." << endl;
+		pressEnterToContinue();
 
-		maxResToDisplay = DEFAULT_MAX_RES_TO_DISPLAY;
 		return -1;
 	}
 
@@ -170,8 +179,11 @@ void ContactsAPI::deleteContact(Contact* contact) {
 }
 
 std::ostream& operator<<(std::ostream& out, const ContactsList& contacts) {
-	foreach(contacts, it)
-		out << **it << std::endl;
+	if (contacts.empty())
+		out << "Contacts list is empty." << endl;
+	else
+		foreach(contacts, it)
+			out << **it << std::endl;
 
 	return out;
 }
