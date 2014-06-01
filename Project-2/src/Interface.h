@@ -16,6 +16,7 @@ public:
 	virtual ~Interface();
 
 	bool isDone();
+
 	void clearScreen();
 	void clearStdIn();
 	void pressEnterToContinue();

@@ -1,8 +1,6 @@
 #include "Interface.h"
 
 #include <iostream>
-#include <cstdlib>
-#include <algorithm>
 
 using namespace std;
 
@@ -25,7 +23,7 @@ void Interface::clearScreen() {
 }
 
 void Interface::clearStdIn() {
-	// clearing buffer
+	// clear buffer
 	cin.clear();
 	cin.ignore(10000, '\n');
 }
@@ -93,23 +91,41 @@ void Interface::showMainMenu() {
 
 void Interface::showContactsList() {
 	clearScreen();
-
-	cout << contactsAPI->getContactsToString();
+	cout << contactsAPI->getContacts();
 
 	clearStdInAndPressEnterToContinue();
 }
 
 Contact* Interface::searchContact() {
+	// initialize search string
 	string search = "";
 
-	bool escWasPressed = false;
-	bool typing = true;
+	bool escWasPressed = false, typing = true;
 	do {
+		// update search results
 		contactsAPI->updateSearchResults(search);
 
+		// get search results
+		SearchResults l = contactsAPI->getSearchResults();
+
+		// calculate number of results to display
+		unsigned int settingsMaxRes = contactsAPI->getMaxResToDisplay();
+		int nRes = (l.size() < settingsMaxRes) ? l.size() : settingsMaxRes;
+
+		// print search user interface
 		clearScreen();
 		cout << "---------------------------------------------" << endl;
-		cout << contactsAPI->getSearchResults();
+		cout << "Search: " << search << "|" << endl;
+		cout << "Showing " << nRes << " of " << l.size() << " results." << endl;
+		cout << "- - - - - - - - - - - - - - - - - - - - - - -";
+		for (int i = 0; i < nRes; i++) {
+			if (i == 1)
+				cout << "- - - - - - - - - - - - - - - - - - - - - - -";
+
+			cout << endl;
+			cout << *l[i];
+		}
+		cout << "- - - - - - - - - - - - - - - - - - - - - - -" << endl;
 		cout << "Usage:" << endl;
 		cout << "    Press <Enter> to select the first contact" << endl;
 		cout << "    Press <Esc> to go back" << endl;
@@ -119,9 +135,9 @@ Contact* Interface::searchContact() {
 		char c;
 		do {
 			c = getChar();
-			// cout << "CHAR CODE: " << (int) c << endl;
 		} while (!isValid(c));
 
+		// process character
 		if (c == BACKSPACE_CODE)
 			// delete last string character
 			search = search.substr(0, search.size() - 1);
@@ -135,17 +151,26 @@ Contact* Interface::searchContact() {
 			search += c;
 	} while (typing);
 
+	// if <Esc> was pressed, return null contact
 	Contact* selectedContact = NULL;
+
+	// if <Esc> was not pressed
 	if (!escWasPressed) {
-		if (contactsAPI->getSearchResults().size() != 0) {
+		// if search results is not empty
+		if (!contactsAPI->getSearchResults().empty()) {
+			// update selected contact
 			selectedContact = (*contactsAPI->getSearchResults().begin());
 
-			cout << endl;
+			// display selected contact
+			clearScreen();
 			cout << "Selected contact:" << endl;
 			cout << *selectedContact << endl;
-
 			pressEnterToContinue();
+
+			// prompt user what to do with the selected contact
+			// TODO
 		} else {
+			// if no contact is selected
 			cout << endl;
 			cout << "Warning: No contact selected." << endl;
 			pressEnterToContinue();
@@ -230,19 +255,6 @@ void Interface::addContact() {
 			cout << endl;
 		} else
 			valid = true;
-
-		/*
-		 // when regex_match gets implemented,
-		 // uncomment this to enable a decent email validation.
-
-		 const tr1::regex pattern("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}");
-
-		 if (email.size() == 0) {
-		 valid = true;
-		 email = NULL_FIELD;
-		 } else if (std::tr1::regex_match(email, pattern))
-		 valid = true;
-		 */
 	} while (!valid);
 
 	// -------------------------------------------
@@ -255,28 +267,39 @@ void Interface::addContact() {
 	// -------------------------------------------
 	// add new contact to contacts
 	contactsAPI->addContact(firstName, lastName, phoneNumber, email, address);
+
 	cout << "Contact successfully added." << endl;
+	cout << endl;
 	pressEnterToContinue();
 }
 
 void Interface::removeContact() {
+	// get a contact to remove
 	Contact* contact = searchContact();
 
+	// if a contact has been selected
 	if (contact) {
 		bool done = false;
-		do {
-			char input;
 
+		do {
 			cout << endl;
 			cout << "Remove " << contact->getName() << "? [Y/n] ";
+
+			// get input
+			char input;
 			cin >> input;
 
+			// lower case input
 			input = tolower(input);
+
+			// if user confirms action
 			if (input == 'y') {
+				// delete contact
 				contactsAPI->deleteContact(contact);
 				cout << "Contact successfully removed." << endl;
 				done = true;
 			} else if (input == 'n') {
+				// cancel contact deletion
 				cout << "Operation canceled." << endl;
 				done = true;
 			}
@@ -297,17 +320,21 @@ void Interface::editSettings() {
 
 	bool done = false;
 	do {
-		int input;
 		cout << endl;
 		cout << "Insert new value: ";
+
+		// get input
+		int input;
 		cin >> input;
 
-		if (input <= 0 || 20 < input) {
-			cout << "Error: Input must be a value between 1-20." << endl;
-			clearStdInAndPressEnterToContinue();
-		} else {
+		// if input is valid
+		if (0 < input && input <= 20) {
+			// set new maximum number of results to display
 			contactsAPI->setMaxResToDisplay(input);
 			done = true;
+		} else {
+			cout << "Error: Input must be a value between 1-20." << endl;
+			clearStdInAndPressEnterToContinue();
 		}
 	} while (!done);
 

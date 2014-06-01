@@ -29,8 +29,7 @@ class ContactsAPI {
 private:
 	ContactsList contacts;
 
-	static unsigned int maxResToDisplay;
-	static std::string search;
+	unsigned int maxResToDisplay;
 	SearchResults searchResults;
 
 public:
@@ -38,12 +37,9 @@ public:
 	virtual ~ContactsAPI();
 
 	const ContactsList& getContacts() const;
-	const std::string getContactsToString() const;
-	void setContacts(const ContactsList& contacts);
-	static unsigned int getMaxResToDisplay();
+	unsigned int getMaxResToDisplay();
 	void setMaxResToDisplay(unsigned int maxResToDisplay);
 	const SearchResults& getSearchResults() const;
-	void setSearchResults(const SearchResults& searchResults);
 
 	void loadContacts();
 	void saveContacts();
@@ -52,13 +48,10 @@ public:
 	void saveSettings();
 
 	void updateSearchResults(std::string search);
-
 	void addContact(Contact* contact);
 	void addContact(std::string firstName, std::string lastName,
 			std::string phoneNumber, std::string email, std::string address);
 	void deleteContact(Contact* contact);
-
-	friend std::ostream& operator<<(std::ostream& out, const SearchResults l);
 };
 
-std::ostream& operator<<(std::ostream& out, const SearchResults l);
+std::ostream& operator<<(std::ostream& out, const ContactsList& contacts);
