@@ -5,6 +5,12 @@
 
 using namespace std;
 
+Contact::Contact() {
+	Contact(NULL_FIELD_LABEL, NULL_FIELD_LABEL, NULL_FIELD_LABEL,
+			NULL_FIELD_LABEL, NULL_FIELD_LABEL);
+	this->distanceToSearch = 0;
+}
+
 Contact::Contact(string firstName, string lastName, string phoneNumber,
 		string email, string address) {
 	this->firstName = firstName;
@@ -12,8 +18,7 @@ Contact::Contact(string firstName, string lastName, string phoneNumber,
 	this->phoneNumber = phoneNumber;
 	this->email = email;
 	this->address = address;
-
-	distanceToSearch = 0;
+	this->distanceToSearch = 0;
 }
 
 Contact::~Contact() {

@@ -9,6 +9,7 @@ private:
 	int distanceToSearch;
 
 public:
+	Contact();
 	Contact(std::string firstName, std::string lastName,
 			std::string phoneNumber, std::string email, std::string address);
 	virtual ~Contact();

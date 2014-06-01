@@ -36,6 +36,7 @@ void Interface::showMainMenu() {
 
 	int input;
 	cin >> input;
+	clearStdIn();
 	input--;
 
 	switch ((MainMenuAction) input) {
@@ -43,32 +44,15 @@ void Interface::showMainMenu() {
 		showContactsList();
 		break;
 	case SEARCH:
-		clearStdIn();
-		if (contactsAPI->getContacts().empty()) {
-			cout << endl;
-			cout << "Impossible to search contacts with an empty contacts list."
-					<< endl;
-			pressEnterToContinue();
-		} else
-			searchContact();
+		performActionOnContact(searchContact());
 		break;
 	case ADD:
-		clearStdIn();
 		addContact();
 		break;
 	case REMOVE:
-		clearStdIn();
-		if (contactsAPI->getContacts().empty()) {
-			cout << endl;
-			cout
-					<< "Impossible to remove a contact from an empty contacts list."
-					<< endl;
-			pressEnterToContinue();
-		} else
-			removeContact();
+		removeContact(searchContact());
 		break;
 	case SETTINGS:
-		clearStdIn();
 		editSettings();
 		break;
 	case EXIT:
@@ -90,9 +74,18 @@ void Interface::showContactsList() {
 }
 
 Contact* Interface::searchContact() {
+	// if contacts list is empty
+	if (contactsAPI->getContacts().empty()) {
+		cout << endl;
+		cout << "Impossible to search contacts with an empty contacts list."
+				<< endl;
+		pressEnterToContinue();
+
+		return NULL;
+	}
+
 	// initialize search string
 	string search = "";
-
 	bool escWasPressed = false, typing = true;
 	do {
 		// update search results
@@ -158,10 +151,6 @@ Contact* Interface::searchContact() {
 			clearScreen();
 			cout << "Selected contact:" << endl;
 			cout << *selectedContact << endl;
-			pressEnterToContinue();
-
-			// prompt user what to do with the selected contact
-			// TODO
 		} else {
 			// if no contact is selected
 			cout << endl;
@@ -173,109 +162,92 @@ Contact* Interface::searchContact() {
 	return selectedContact;
 }
 
-void Interface::addContact() {
-	bool valid;
-	string name, firstName, lastName, phoneNumber, email, address;
+void Interface::performActionOnContact(Contact* contact) {
+	if (contact) {
+		cout << "1. Edit name" << endl;
+		cout << "2. Edit phone number" << endl;
+		cout << "3. Edit email" << endl;
+		cout << "4. Edit address" << endl;
+		cout << "5. Delete contact" << endl;
+		cout << "6. Cancel" << endl;
 
+		bool done = false;
+		do {
+			cout << endl;
+			cout << "Choose an option:" << endl;
+			cout << "> ";
+
+			int input;
+			cin >> input;
+			clearStdIn();
+			input--;
+
+			switch ((ContactAction) input) {
+			case EDIT_NAME:
+				setContactName(contact);
+				contactsAPI->saveContacts();
+				done = true;
+				break;
+			case EDIT_PHONE:
+				cout << endl;
+				setContactPhone(contact);
+				contactsAPI->saveContacts();
+				done = true;
+				break;
+			case EDIT_EMAIL:
+				cout << endl;
+				setContactEmail(contact);
+				contactsAPI->saveContacts();
+				done = true;
+				break;
+			case EDIT_ADDRESS:
+				cout << endl;
+				setContactAddress(contact);
+				contactsAPI->saveContacts();
+				done = true;
+				break;
+			case DELETE:
+				cout << endl;
+				removeContact(contact);
+				contactsAPI->saveContacts();
+				done = true;
+				break;
+			case CANCEL:
+				done = true;
+				break;
+			default:
+				break;
+			}
+		} while (!done);
+	}
+}
+
+void Interface::addContact() {
 	clearScreen();
 	cout << "-----------" << endl;
 	cout << "Add contact" << endl;
 	cout << "-----------" << endl;
 
-	// -------------------------------------------
-	// name
-	valid = false;
-	do {
-		cout << endl;
-		cout << "Name: ";
-		getline(cin, name);
+	Contact* contact = new Contact();
+	setContactName(contact);
+	setContactPhone(contact);
+	setContactEmail(contact);
+	setContactAddress(contact);
 
-		// processing name
-		vector<string> names = getTokens(name, " ");
-
-		if (names.size() >= 1) {
-			valid = true;
-			firstName = names[0];
-			lastName = NULL_FIELD_LABEL;
-		}
-
-		if (names.size() >= 2)
-			lastName = names[names.size() - 1];
-
-		foreach(contactsAPI->getContacts(), it)
-			if ((*it)->getName().compare(firstName + " " + lastName) == 0
-					|| ((*it)->getFirstName().compare(firstName) == 0
-							&& fieldIsNull((*it)->getLastName()))) {
-				cout << "Error: A contact with this name already exists."
-						<< endl;
-
-				valid = false;
-			}
-	} while (!valid);
-
-	// -------------------------------------------
-	// phone number
-	valid = false;
-	do {
-		cout << "Phone number: ";
-		getline(cin, phoneNumber);
-
-		if (phoneNumber.size() == 9)
-			valid = true;
-		else if (phoneNumber.size() == 0) {
-			valid = true;
-			phoneNumber = NULL_FIELD_LABEL;
-		} else {
-			cout << "Error: phone number must have exactly 9 digits." << endl;
-			cout << endl;
-		}
-	} while (!valid);
-
-	// -------------------------------------------
-	// email
-	valid = false;
-	do {
-		cout << "Email: ";
-		getline(cin, email);
-
-		if (email.size() == 0) {
-			valid = true;
-			email = NULL_FIELD_LABEL;
-		} else if (email.size() < 5 || email.find(" ") != string::npos
-				|| email.find("@") == string::npos
-				|| email.find(".") == string::npos) {
-			cout << "Error: invalid email." << endl;
-			cout << endl;
-		} else
-			valid = true;
-	} while (!valid);
-
-	// -------------------------------------------
-	// address
-	cout << "Address: ";
-	getline(cin, address);
-	if (address.size() == 0)
-		address = NULL_FIELD_LABEL;
-
-	// -------------------------------------------
 	// add new contact to contacts
-	contactsAPI->addContact(firstName, lastName, phoneNumber, email, address);
+	contactsAPI->addContact(contact);
 
 	cout << "Contact successfully added." << endl;
 	cout << endl;
 	pressEnterToContinue();
 }
 
-void Interface::removeContact() {
-	// get a contact to remove
-	Contact* contact = searchContact();
-
+void Interface::removeContact(Contact* contact) {
 	// if a contact has been selected
 	if (contact) {
 		bool done = false;
 
 		do {
-			cout << endl;
 			cout << "Remove " << contact->getName() << "? [Y/n] ";
 
 			// get input
@@ -332,4 +304,97 @@ void Interface::editSettings() {
 	} while (!done);
 
 	clearStdInAndPressEnterToContinue();
+}
+
+void Interface::setContactName(Contact* contact) {
+	string name, firstName, lastName;
+
+	bool valid = false;
+	do {
+		cout << endl;
+		cout << "Name: ";
+		getline(cin, name);
+
+		// processing name
+		vector<string> names = getTokens(name, " ");
+
+		if (names.size() >= 1) {
+			valid = true;
+			firstName = names[0];
+			lastName = NULL_FIELD_LABEL;
+		}
+
+		if (names.size() >= 2)
+			lastName = names[names.size() - 1];
+
+		foreach(contactsAPI->getContacts(), it)
+			if ((*it)->getName().compare(firstName + " " + lastName) == 0
+					|| ((*it)->getFirstName().compare(firstName) == 0
+							&& fieldIsNull((*it)->getLastName()))) {
+				cout << "Error: A contact with this name already exists."
+						<< endl;
+
+				valid = false;
+			}
+	} while (!valid);
+
+	contact->setFirstName(firstName);
+	contact->setLastName(lastName);
+}
+
+void Interface::setContactPhone(Contact* contact) {
+	string phoneNumber;
+
+	bool valid = false;
+	do {
+		cout << "Phone number: ";
+		getline(cin, phoneNumber);
+
+		if (phoneNumber.size() == 9)
+			valid = true;
+		else if (phoneNumber.empty()) {
+			valid = true;
+			phoneNumber = NULL_FIELD_LABEL;
+		} else {
+			cout << "Error: phone number must have exactly 9 digits." << endl;
+			cout << endl;
+		}
+	} while (!valid);
+
+	contact->setPhoneNumber(phoneNumber);
+}
+
+void Interface::setContactEmail(Contact* contact) {
+	string email;
+
+	bool valid = false;
+	do {
+		cout << "Email: ";
+		getline(cin, email);
+
+		if (email.empty()) {
+			valid = true;
+			email = NULL_FIELD_LABEL;
+		} else if (email.size() < 5 || email.find(" ") != string::npos
+				|| email.find("@") == string::npos
+				|| email.find(".") == string::npos) {
+			cout << "Error: invalid email." << endl;
+			cout << endl;
+		} else
+			valid = true;
+	} while (!valid);
+
+	contact->setEmail(email);
+}
+
+void Interface::setContactAddress(Contact* contact) {
+	string address;
+
+	cout << "Address: ";
+	getline(cin, address);
+
+	if (address.empty())
+		address = NULL_FIELD_LABEL;
+
+	contact->setAddress(address);
 }
