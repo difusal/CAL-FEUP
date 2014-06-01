@@ -1,7 +1,6 @@
 #include "Interface.h"
 
 #include <iostream>
-#include <fstream>
 #include <cstdlib>
 #include <algorithm>
 
@@ -9,13 +8,11 @@ using namespace std;
 
 Interface::Interface() {
 	done = false;
-	loadContacts();
-	loadSettings();
+	contactsAPI = new ContactsAPI();
 }
 
 Interface::~Interface() {
-	foreach(contacts, it)
-		delete (*it);
+	delete contactsAPI;
 }
 
 bool Interface::isDone() {
@@ -41,149 +38,6 @@ void Interface::pressEnterToContinue() {
 void Interface::clearStdInAndPressEnterToContinue() {
 	clearStdIn();
 	pressEnterToContinue();
-}
-
-void Interface::loadContacts() {
-	// clearing vector current content
-	contacts.clear();
-
-	// trying to open file
-	ifstream fin;
-	fin.open(contactsListPath.c_str());
-	if (!fin) {
-		cerr << "Error: Unable to open file: " << contactsListPath << endl;
-		exit(1);
-	}
-
-	// reading number of contacts to be read from file
-	int nContacts;
-	fin >> nContacts;
-
-	// loading each contact from file
-	string firstName, lastName, phoneNumber, email, address;
-	for (int i = 0; i < nContacts; i++) {
-		// reading firstName, lastName, phoneNumber and email
-		fin >> firstName >> lastName >> phoneNumber >> email;
-
-		// reading address
-		getline(fin, address);
-		address.erase(address.begin());
-
-		/*
-		 // Debugging block
-		 cout << "firstName: <" << firstName << ">" << endl;
-		 cout << "lastName: <" << lastName << ">" << endl;
-		 cout << "phoneNumber: <" << phoneNumber << ">" << endl;
-		 cout << "email: <" << email << ">" << endl;
-		 cout << "address: <" << address << ">" << endl;
-		 cout << endl;
-		 */
-
-		Contact* contact = new Contact(firstName, lastName, phoneNumber, email,
-				address);
-		contacts.insert(contact);
-	}
-}
-
-void Interface::saveContacts() {
-	cout << endl;
-	cout << "Updating: " << contactsListPath << endl;
-
-	// trying to open output stream
-	ofstream fout;
-	fout.open(contactsListPath.c_str());
-	if (!fout) {
-		cerr << "Error: Unable to open file: " << contactsListPath << endl;
-		exit(1);
-	}
-
-	// saving number of contacts
-	fout << contacts.size() << endl;
-	foreach(contacts, it)
-	{
-		// saving firstName and lastName
-		fout << (*it)->getFirstName() << " " << (*it)->getLastName();
-
-		// saving phoneNumber
-		fout << " " << (*it)->getPhoneNumber();
-
-		// saving email
-		fout << " " << (*it)->getEmail();
-
-		// saving address
-		fout << " " << (*it)->getAddress();
-
-		fout << endl;
-	}
-}
-
-int Interface::loadSettings() {
-	// trying to open file
-	ifstream fin;
-	fin.open(settingsPath.c_str());
-	if (!fin) {
-		cerr << "Error: Unable to open file: " << settingsPath << endl;
-		cerr << "Warning: Using default settings values." << endl;
-
-		maxResToDisplay = 3;
-		return -1;
-	}
-
-	// read number of search results to display
-	fin >> maxResToDisplay;
-
-	return 0;
-}
-
-void Interface::saveSettings() {
-	cout << endl;
-	cout << "Updating: " << settingsPath << endl;
-
-	// try to open output stream
-	ofstream fout;
-	fout.open(settingsPath.c_str());
-	if (!fout) {
-		cerr << "Error: Unable to open file: " << settingsPath << endl;
-		exit(1);
-	}
-
-	// save number of search results to display
-	fout << maxResToDisplay << endl;
-}
-
-vector<Contact*> Interface::getSearchResults(string search) {
-	vector<Contact*> results;
-
-	// if search is equal to "" (empty string)
-	if (search.size() == 0)
-		foreach(contacts, it)
-			results.push_back(*it);
-	else {
-		foreach(contacts, it)
-			(*it)->updateDistanceToSearch(search), results.push_back(*it);
-
-		sort(ALL(results), shortestDistanceContact);
-	}
-
-	return results;
-}
-
-void Interface::displaySearchResults(vector<Contact*> results) {
-	int nResToDisplay =
-			(results.size() < maxResToDisplay) ?
-					results.size() : maxResToDisplay;
-
-	cout << "Showing " << nResToDisplay << " of " << results.size()
-			<< " results." << endl;
-	cout << "- - - - - - - - - - - - - - - - - - - - - - -";
-
-	for (int i = 0; i < nResToDisplay; i++) {
-		if (i == 1)
-			cout << "- - - - - - - - - - - - - - - - - - - - - - -";
-
-		cout << endl;
-		cout << *results[i];
-	}
 }
 
 void Interface::showMainMenu() {
@@ -236,29 +90,26 @@ void Interface::showMainMenu() {
 		break;
 	}
 }
+
 void Interface::showContactsList() {
 	clearScreen();
-	foreach(contacts, it)
-		cout << **it << endl;
+
+	cout << contactsAPI->getContactsToString();
 
 	clearStdInAndPressEnterToContinue();
 }
 
 Contact* Interface::searchContact() {
 	string search = "";
-	vector<Contact*> searchResults;
 
 	bool escWasPressed = false;
 	bool typing = true;
 	do {
+		contactsAPI->updateSearchResults(search);
+
 		clearScreen();
 		cout << "---------------------------------------------" << endl;
-		cout << "Search: " << search << "|" << endl;
-
-		searchResults = getSearchResults(search);
-		displaySearchResults(searchResults);
-
-		cout << "- - - - - - - - - - - - - - - - - - - - - - -" << endl;
+		cout << contactsAPI->getSearchResults();
 		cout << "Usage:" << endl;
 		cout << "    Press <Enter> to select the first contact" << endl;
 		cout << "    Press <Esc> to go back" << endl;
@@ -285,16 +136,15 @@ Contact* Interface::searchContact() {
 	} while (typing);
 
 	Contact* selectedContact = NULL;
+	if (!escWasPressed) {
+		if (contactsAPI->getSearchResults().size() != 0) {
+			selectedContact = (*contactsAPI->getSearchResults().begin());
 
-	if (escWasPressed)
-		cout << "<Esc> has been pressed." << endl;
-	else {
-		if (searchResults.size() != 0) {
 			cout << endl;
 			cout << "Selected contact:" << endl;
-			cout << **searchResults.begin();
+			cout << *selectedContact << endl;
 
-			selectedContact = (*searchResults.begin());
+			pressEnterToContinue();
 		} else {
 			cout << endl;
 			cout << "Warning: No contact selected." << endl;
@@ -334,7 +184,7 @@ void Interface::addContact() {
 		if (names.size() >= 2)
 			lastName = names[names.size() - 1];
 
-		foreach(contacts, it)
+		foreach(contactsAPI->getContacts(), it)
 			if ((*it)->getName().compare(firstName + " " + lastName) == 0
 					|| ((*it)->getFirstName().compare(firstName) == 0
 							&& fieldIsNull((*it)->getLastName()))) {
@@ -404,13 +254,7 @@ void Interface::addContact() {
 
 	// -------------------------------------------
 	// add new contact to contacts
-	Contact* newContact = new Contact(firstName, lastName, phoneNumber, email,
-			address);
-	contacts.insert(newContact);
-
-	// -------------------------------------------
-	// save contacts
-	saveContacts();
+	contactsAPI->addContact(firstName, lastName, phoneNumber, email, address);
 	cout << "Contact successfully added." << endl;
 	pressEnterToContinue();
 }
@@ -429,9 +273,8 @@ void Interface::removeContact() {
 
 			input = tolower(input);
 			if (input == 'y') {
-				contacts.erase(contact);
+				contactsAPI->deleteContact(contact);
 				cout << "Contact successfully removed." << endl;
-				saveContacts();
 				done = true;
 			} else if (input == 'n') {
 				cout << "Operation canceled." << endl;
@@ -449,7 +292,8 @@ void Interface::editSettings() {
 	cout << "--------" << endl;
 	cout << "Settings" << endl;
 	cout << "--------" << endl;
-	cout << "Current number of results to display: " << maxResToDisplay << endl;
+	cout << "Current number of results to display: "
+			<< contactsAPI->getMaxResToDisplay() << endl;
 
 	bool done = false;
 	do {
@@ -462,8 +306,7 @@ void Interface::editSettings() {
 			cout << "Error: Input must be a value between 1-20." << endl;
 			clearStdInAndPressEnterToContinue();
 		} else {
-			maxResToDisplay = input;
-			saveSettings();
+			contactsAPI->setMaxResToDisplay(input);
 			done = true;
 		}
 	} while (!done);
