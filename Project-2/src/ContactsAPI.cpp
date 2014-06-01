@@ -1,13 +1,12 @@
 #include "ContactsAPI.h"
 
-#include <sstream>
+#include <iostream>
 #include <fstream>
 #include <algorithm>
 
 using namespace std;
 
-unsigned int ContactsAPI::maxResToDisplay = 0;
-std::string ContactsAPI::search = "";
+const int DEFAULT_MAX_RES_TO_DISPLAY = 3;
 
 ContactsAPI::ContactsAPI() {
 	loadContacts();
@@ -23,19 +22,6 @@ const ContactsList& ContactsAPI::getContacts() const {
 	return contacts;
 }
 
-const std::string ContactsAPI::getContactsToString() const {
-	stringstream ss;
-
-	foreach(contacts, it)
-		ss << **it << endl;
-
-	return ss.str();
-}
-
-void ContactsAPI::setContacts(const ContactsList& contacts) {
-	this->contacts = contacts;
-}
-
 unsigned int ContactsAPI::getMaxResToDisplay() {
 	return maxResToDisplay;
 }
@@ -45,24 +31,15 @@ void ContactsAPI::setMaxResToDisplay(unsigned int maxResToDisplay) {
 	saveSettings();
 }
 
-void ContactsAPI::deleteContact(Contact* contact) {
-	contacts.erase(contact);
-	saveContacts();
-}
-
 const SearchResults& ContactsAPI::getSearchResults() const {
 	return searchResults;
 }
 
-void ContactsAPI::setSearchResults(const SearchResults& searchResults) {
-	this->searchResults = searchResults;
-}
-
 void ContactsAPI::loadContacts() {
-	// clearing vector current content
+	// clear vector current content
 	contacts.clear();
 
-	// trying to open file
+	// try to open file
 	ifstream fin;
 	fin.open(contactsListPath.c_str());
 	if (!fin) {
@@ -70,33 +47,24 @@ void ContactsAPI::loadContacts() {
 		exit(1);
 	}
 
-	// reading number of contacts to be read from file
+	// read number of contacts to be read from file
 	int nContacts;
 	fin >> nContacts;
 
-	// loading each contact from file
-	string firstName, lastName, phoneNumber, email, address;
+	// load each contact from file
 	for (int i = 0; i < nContacts; i++) {
-		// reading firstName, lastName, phoneNumber and email
+		string firstName, lastName, phoneNumber, email, address;
+
+		// read firstName, lastName, phoneNumber and email
 		fin >> firstName >> lastName >> phoneNumber >> email;
 
-		// reading address
+		// read address
 		getline(fin, address);
+
+		// erase first character, since it is a ' ' (space)
 		address.erase(address.begin());
 
-		/*
-		 // Debugging block
-		 cout << "firstName: <" << firstName << ">" << endl;
-		 cout << "lastName: <" << lastName << ">" << endl;
-		 cout << "phoneNumber: <" << phoneNumber << ">" << endl;
-		 cout << "email: <" << email << ">" << endl;
-		 cout << "address: <" << address << ">" << endl;
-		 cout << endl;
-		 */
-
-		Contact* contact = new Contact(firstName, lastName, phoneNumber, email,
-				address);
-		contacts.insert(contact);
+		addContact(firstName, lastName, phoneNumber, email, address);
 	}
 }
 
@@ -104,7 +72,7 @@ void ContactsAPI::saveContacts() {
 	cout << endl;
 	cout << "Updating: " << contactsListPath << endl;
 
-	// trying to open output stream
+	// try to open output stream
 	ofstream fout;
 	fout.open(contactsListPath.c_str());
 	if (!fout) {
@@ -112,20 +80,22 @@ void ContactsAPI::saveContacts() {
 		exit(1);
 	}
 
-	// saving number of contacts
+	// save number of contacts
 	fout << contacts.size() << endl;
+
+	// save each contact
 	foreach(contacts, it)
 	{
-		// saving firstName and lastName
+		// save firstName and lastName
 		fout << (*it)->getFirstName() << " " << (*it)->getLastName();
 
-		// saving phoneNumber
+		// save phoneNumber
 		fout << " " << (*it)->getPhoneNumber();
 
-		// saving email
+		// save email
 		fout << " " << (*it)->getEmail();
 
-		// saving address
+		// save address
 		fout << " " << (*it)->getAddress();
 
 		fout << endl;
@@ -133,14 +103,14 @@ void ContactsAPI::saveContacts() {
 }
 
 int ContactsAPI::loadSettings() {
-	// trying to open file
+	// try to open file
 	ifstream fin;
 	fin.open(settingsPath.c_str());
 	if (!fin) {
 		cerr << "Error: Unable to open file: " << settingsPath << endl;
 		cerr << "Warning: Using default settings values." << endl;
 
-		maxResToDisplay = 3;
+		maxResToDisplay = DEFAULT_MAX_RES_TO_DISPLAY;
 		return -1;
 	}
 
@@ -170,17 +140,17 @@ void ContactsAPI::updateSearchResults(string search) {
 	// clean previous results
 	searchResults.clear();
 
-	// update search keywords
-	this->search = search;
-
 	// if search is equal to "" (empty string)
 	if (search.size() == 0)
+		// the results are the same as the contacts list
 		foreach(contacts, it)
 			searchResults.push_back(*it);
 	else {
+		// update each contact distance to the search keywords and put it in the results vector
 		foreach(contacts, it)
 			(*it)->updateDistanceToSearch(search), searchResults.push_back(*it);
 
+		// sort the results vector by shortest distance
 		sort(ALL(searchResults), shortestDistanceContact);
 	}
 }
@@ -194,23 +164,14 @@ void ContactsAPI::addContact(string firstName, string lastName,
 	addContact(new Contact(firstName, lastName, phoneNumber, email, address));
 }
 
-std::ostream& operator<<(std::ostream& out, const SearchResults l) {
-	int nResToDisplay =
-			(l.size() < ContactsAPI::maxResToDisplay) ?
-					l.size() : ContactsAPI::maxResToDisplay;
+void ContactsAPI::deleteContact(Contact* contact) {
+	contacts.erase(contact);
+	saveContacts();
+}
 
-	out << "Search: " << ContactsAPI::search << "|" << std::endl;
-	out << "Showing " << nResToDisplay << " of " << l.size() << " results."
-			<< std::endl;
-	out << "- - - - - - - - - - - - - - - - - - - - - - -";
-	for (int i = 0; i < nResToDisplay; i++) {
-		if (i == 1)
-			out << "- - - - - - - - - - - - - - - - - - - - - - -";
-
-		out << std::endl;
-		out << *l[i];
-	}
-	out << "- - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+std::ostream& operator<<(std::ostream& out, const ContactsList& contacts) {
+	foreach(contacts, it)
+		out << **it << std::endl;
 
 	return out;
 }

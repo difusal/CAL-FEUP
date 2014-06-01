@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <string>
 #include "Utilities.h"
 
@@ -28,51 +27,8 @@ public:
 	int getDistanceToSearch() const;
 	void setDistanceToSearch(int distanceToSearch);
 	void updateDistanceToSearch(std::string search);
-
-	friend std::ostream& operator<<(std::ostream& out, const Contact& contact) {
-		int fieldsLabelWidth = 9;
-
-		// output name
-		if (!fieldIsNull(contact.firstName) || !fieldIsNull(contact.lastName)) {
-			out.width(fieldsLabelWidth);
-			out << "Name: ";
-
-			if (!fieldIsNull(contact.firstName))
-				out << contact.firstName;
-
-			if (!fieldIsNull(contact.lastName))
-				out << " " << contact.lastName;
-
-			out << std::endl;
-		}
-
-		// output phone number
-		if (!fieldIsNull(contact.phoneNumber)) {
-			out.width(fieldsLabelWidth);
-			out << "Phone: ";
-
-			for (int i = 0; i < 3; i++) {
-				out << contact.phoneNumber.substr(i * 3, 3);
-				if (i < 2)
-					out << " ";
-			}
-			out << std::endl;
-		}
-
-		// output email
-		if (!fieldIsNull(contact.email)) {
-			out.width(fieldsLabelWidth);
-			out << "Email: " << contact.email << std::endl;
-		}
-
-		// output address
-		if (!fieldIsNull(contact.address)) {
-			out.width(fieldsLabelWidth);
-			out << "Address: " << contact.address << std::endl;
-		}
-
-		return out;
-	}
 };
 
 bool shortestDistanceContact(const Contact* c1, const Contact* c2);
+
+std::ostream& operator<<(std::ostream& out, const Contact& contact);
