@@ -67,7 +67,7 @@ void Interface::showMainMenu() {
 	default:
 		cout << endl;
 		cout << "Invalid input." << endl;
-		clearStdInAndPressEnterToContinue();
+		pressEnterToContinue();
 		break;
 	}
 }
