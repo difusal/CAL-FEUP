@@ -76,6 +76,7 @@ void Contact::setDistanceToSearch(int distanceToSearch) {
 	this->distanceToSearch = distanceToSearch;
 }
 
+// Updates this contact distance to the specified search string.
 void Contact::updateDistanceToSearch(std::string search) {
 	// name comparison
 	distanceToSearch = min(

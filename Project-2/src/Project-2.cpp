@@ -4,10 +4,14 @@
 using namespace std;
 
 int main() {
+	// create interface
 	Interface interface;
 
 	do {
+		// show interface menu
 		interface.showMainMenu();
+
+		// while interface is not done
 	} while (!interface.isDone());
 
 	cout << endl;

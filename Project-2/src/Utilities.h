@@ -66,10 +66,22 @@ bool fieldIsNull(std::string field);
  */
 std::vector<std::string> getTokens(std::string str, std::string separator);
 
+/**
+ * Clears console screen.
+ */
 void clearScreen();
 
+/**
+ * Clears standard input.
+ */
 void clearStdIn();
 
+/**
+ * Wait for <Enter> key to be pressed.
+ */
 void pressEnterToContinue();
 
+/**
+ * Clears standard input and wait for <Enter> key to be pressed.
+ */
 void clearStdInAndPressEnterToContinue();

@@ -27,6 +27,12 @@ public:
 	void setPhoneNumber(const std::string& phoneNumber);
 	int getDistanceToSearch() const;
 	void setDistanceToSearch(int distanceToSearch);
+
+	/**
+	 * Updates this contact distance to the specified search string.
+	 *
+	 * @param search The specified search string.
+	 */
 	void updateDistanceToSearch(std::string search);
 };
 

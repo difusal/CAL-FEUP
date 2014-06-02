@@ -35,6 +35,7 @@ const SearchResults& ContactsAPI::getSearchResults() const {
 	return searchResults;
 }
 
+// Loads an existing contacts list.
 int ContactsAPI::loadContacts() {
 	// clear vector current content
 	contacts.clear();
@@ -74,6 +75,7 @@ int ContactsAPI::loadContacts() {
 	return 0;
 }
 
+// Saves the current contacts list.
 void ContactsAPI::saveContacts() {
 	cout << endl;
 	cout << "Updating: " << contactsListPath << endl;
@@ -108,6 +110,7 @@ void ContactsAPI::saveContacts() {
 	}
 }
 
+// Loads the program settings.
 int ContactsAPI::loadSettings() {
 	// try to open file
 	ifstream fin;
@@ -129,6 +132,7 @@ int ContactsAPI::loadSettings() {
 	return 0;
 }
 
+// Saves the current program settings.
 void ContactsAPI::saveSettings() {
 	cout << endl;
 	cout << "Updating: " << settingsPath << endl;
@@ -145,6 +149,7 @@ void ContactsAPI::saveSettings() {
 	fout << maxResToDisplay << endl;
 }
 
+// Updates the search results using the specified search string.
 void ContactsAPI::updateSearchResults(string search) {
 	// clean previous results
 	searchResults.clear();
@@ -163,16 +168,20 @@ void ContactsAPI::updateSearchResults(string search) {
 		sort(ALL(searchResults), shortestDistanceContact);
 	}
 }
+
+// Adds the specified contact to the contacts list.
 void ContactsAPI::addContact(Contact* contact) {
 	contacts.insert(contact);
 	saveContacts();
 }
 
+// Creates a contact with the specified arguments and adds it to the contacts list.
 void ContactsAPI::addContact(string firstName, string lastName,
 		string phoneNumber, string email, string address) {
 	addContact(new Contact(firstName, lastName, phoneNumber, email, address));
 }
 
+// Deletes a contact from the contacts list.
 void ContactsAPI::deleteContact(Contact* contact) {
 	contacts.erase(contact);
 	saveContacts();

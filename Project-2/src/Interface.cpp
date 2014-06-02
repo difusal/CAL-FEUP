@@ -5,8 +5,11 @@
 
 using namespace std;
 
+// Creates and initializes an interface.
 Interface::Interface() {
 	done = false;
+
+	// initialize the contacts API
 	contactsAPI = new ContactsAPI();
 }
 
@@ -14,10 +17,12 @@ Interface::~Interface() {
 	delete contactsAPI;
 }
 
+// Returns true if interface is done.
 bool Interface::isDone() {
 	return done;
 }
 
+// Show the interface main menu.
 void Interface::showMainMenu() {
 	clearScreen();
 	cout << "-------------------" << endl;
@@ -34,6 +39,7 @@ void Interface::showMainMenu() {
 	cout << "Choose an option:" << endl;
 	cout << "> ";
 
+	// get input
 	int input;
 	cin >> input;
 	clearStdIn();
@@ -66,13 +72,15 @@ void Interface::showMainMenu() {
 	}
 }
 
+// Shows the contacts list.
 void Interface::showContactsList() {
 	clearScreen();
 	cout << contactsAPI->getContacts();
 
-	clearStdInAndPressEnterToContinue();
+	pressEnterToContinue();
 }
 
+// Shows the search interface.
 Contact* Interface::searchContact() {
 	// if contacts list is empty
 	if (contactsAPI->getContacts().empty()) {
@@ -128,7 +136,6 @@ Contact* Interface::searchContact() {
 			// delete last string character
 			search = search.substr(0, search.size() - 1);
 		else if (c == ENTER_CODE)
-			// done typing
 			typing = false;
 		else if (c == ESC_CODE) {
 			typing = false;
@@ -137,7 +144,7 @@ Contact* Interface::searchContact() {
 			search += c;
 	} while (typing);
 
-	// if <Esc> was pressed, return null contact
+	// initialize selected contact
 	Contact* selectedContact = NULL;
 
 	// if <Esc> was not pressed
@@ -162,6 +169,7 @@ Contact* Interface::searchContact() {
 	return selectedContact;
 }
 
+// Shows a menu with actions that can be performed on the specified contact.
 void Interface::performActionOnContact(Contact* contact) {
 	if (contact) {
 		cout << "1. Edit name" << endl;
@@ -222,6 +230,7 @@ void Interface::performActionOnContact(Contact* contact) {
 	}
 }
 
+// Shows add contact interface.
 void Interface::addContact() {
 	clearScreen();
 	cout << "-----------" << endl;
@@ -242,6 +251,7 @@ void Interface::addContact() {
 	pressEnterToContinue();
 }
 
+// Shows remove contact interface for the specified contact.
 void Interface::removeContact(Contact* contact) {
 	// if a contact has been selected
 	if (contact) {
@@ -275,6 +285,7 @@ void Interface::removeContact(Contact* contact) {
 	}
 }
 
+// Shows the edit setting interface.
 void Interface::editSettings() {
 	clearScreen();
 	cout << "--------" << endl;
@@ -306,6 +317,7 @@ void Interface::editSettings() {
 	clearStdInAndPressEnterToContinue();
 }
 
+// Prompts user to input a new valid name for the specified contact.
 void Interface::setContactName(Contact* contact) {
 	string name, firstName, lastName;
 
@@ -318,15 +330,21 @@ void Interface::setContactName(Contact* contact) {
 		// processing name
 		vector<string> names = getTokens(name, " ");
 
+		// if names size is greater than 1
 		if (names.size() >= 1) {
 			valid = true;
+
+			// assign first name
 			firstName = names[0];
 			lastName = NULL_FIELD_LABEL;
 		}
 
+		// if names size is greater than 2
 		if (names.size() >= 2)
+			// reassign last name
 			lastName = names[names.size() - 1];
 
+		// check if a contact with the inputed name already exists
 		foreach(contactsAPI->getContacts(), it)
 			if ((*it)->getName().compare(firstName + " " + lastName) == 0
 					|| ((*it)->getFirstName().compare(firstName) == 0
@@ -338,10 +356,12 @@ void Interface::setContactName(Contact* contact) {
 			}
 	} while (!valid);
 
+	// set first and last name
 	contact->setFirstName(firstName);
 	contact->setLastName(lastName);
 }
 
+// Prompts user to input a new valid name for the specified contact.
 void Interface::setContactPhone(Contact* contact) {
 	string phoneNumber;
 
@@ -364,11 +384,13 @@ void Interface::setContactPhone(Contact* contact) {
 	contact->setPhoneNumber(phoneNumber);
 }
 
+// Prompts user to input a new valid email for the specified contact.
 void Interface::setContactEmail(Contact* contact) {
 	string email;
 
 	bool valid = false;
 	do {
+		// get input
 		cout << "Email: ";
 		getline(cin, email);
 
@@ -378,6 +400,7 @@ void Interface::setContactEmail(Contact* contact) {
 		} else if (email.size() < 5 || email.find(" ") != string::npos
 				|| email.find("@") == string::npos
 				|| email.find(".") == string::npos) {
+			// if input does not have a '@' or a '.' or the input length is less than 5
 			cout << "Error: invalid email." << endl;
 			cout << endl;
 		} else
@@ -387,9 +410,11 @@ void Interface::setContactEmail(Contact* contact) {
 	contact->setEmail(email);
 }
 
+// Prompts user to input a new valid address for the specified contact.
 void Interface::setContactAddress(Contact* contact) {
 	string address;
 
+	// get input
 	cout << "Address: ";
 	getline(cin, address);
 

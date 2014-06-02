@@ -60,22 +60,26 @@ vector<string> getTokens(string str, string separator) {
 	return vec;
 }
 
+// Clears console screen.
 void clearScreen() {
 	for (int i = 0; i < 60; i++)
 		cout << endl;
 }
 
+// Clears standard input.
 void clearStdIn() {
 	// clear buffer
 	cin.clear();
 	cin.ignore(10000, '\n');
 }
 
+// Wait for <Enter> key to be pressed.
 void pressEnterToContinue() {
 	cout << "Press <Enter> to continue...";
 	cin.get();
 }
 
+// Clears standard input and wait for <Enter> key to be pressed.
 void clearStdInAndPressEnterToContinue() {
 	clearStdIn();
 	pressEnterToContinue();
