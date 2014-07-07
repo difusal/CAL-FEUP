@@ -165,7 +165,7 @@ void ContactsAPI::updateSearchResults(string search) {
 			(*it)->updateDistanceToSearch(search), searchResults.push_back(*it);
 
 		// sort the results vector by shortest distance
-		sort(ALL(searchResults), shortestDistanceContact);
+		sort(ALL(searchResults), shortestDistanceContactFirst);
 	}
 }
 

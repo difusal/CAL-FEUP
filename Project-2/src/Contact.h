@@ -36,6 +36,6 @@ public:
 	void updateDistanceToSearch(std::string search);
 };
 
-bool shortestDistanceContact(const Contact* c1, const Contact* c2);
+bool shortestDistanceContactFirst(const Contact* c1, const Contact* c2);
 
 std::ostream& operator<<(std::ostream& out, const Contact& contact);

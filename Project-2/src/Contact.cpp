@@ -127,7 +127,7 @@ void Contact::updateDistanceToSearch(std::string search) {
 	}
 }
 
-bool shortestDistanceContact(const Contact* c1, const Contact* c2) {
+bool shortestDistanceContactFirst(const Contact* c1, const Contact* c2) {
 	return c1->getDistanceToSearch() < c2->getDistanceToSearch();
 }
 
